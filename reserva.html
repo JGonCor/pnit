@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="El poder de soltar - Evento presencial con Dr. Armando Solarte. Descubre el poder de la conexión interior y la liberación emocional.">
+    <title>Completar pago | El poder de soltar | Dr. Armando Solarte</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/mobile-responsive.css">
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#1e40af', // Azul principal
+                        secondary: '#ff4500', // Color acento naranja
+                        light: '#ffffff', // Blanco
+                        'blue-primary': '#1e40af', // Azul principal
+                        'blue-secondary': '#3b82f6', // Azul secundario
+                        'blue-light': '#dbeafe', // Azul claro
+                    },
+                    fontFamily: {
+                        sans: ['Montserrat', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- ePayco Checkout script -->
+<script type="text/javascript" src="https://checkout.epayco.co/checkout.js" defer id="epayco-script"></script>
+<!-- ePayco Configuration script -->
+<script src="js/epayco-config.js"></script>
+<!-- ePayco Mode Switcher -->
+<script src="js/mode-switcher.js"></script>
+    <script>
+        // Verificar carga del script de ePayco
+        document.addEventListener('DOMContentLoaded', function() {
+            const epaycoScript = document.getElementById('epayco-script');
+            
+            // Verificar si el script ya está cargado
+            if (typeof ePayco !== 'undefined' && ePayco.checkout) {
+                console.log('ePayco ya está cargado correctamente');
+                return;
+            }
+            
+            // Error si el script no se carga después de cierto tiempo
+            const timeoutId = setTimeout(function() {
+                if (typeof ePayco === 'undefined' || !ePayco.checkout) {
+                    console.error('Error: ePayco no se cargó después de esperar 5 segundos');
+                }
+            }, 5000);
+            
+            // Si el script falla, recargar o proporcionar alternativa
+            epaycoScript.onerror = function() {
+                clearTimeout(timeoutId);
+                console.error('Error al cargar el script de ePayco');
+                
+                // Intentar cargar de nuevo
+                const newScript = document.createElement('script');
+                newScript.src = 'https://checkout.epayco.co/checkout.js';
+                newScript.type = 'text/javascript';
+                document.head.appendChild(newScript);
+            };
+        });
+    </script>
+</head>
+<body class="font-sans">
+    <!-- Header/Navigation -->
+    <header class="w-full bg-white z-50">
+        <div class="container mx-auto px-4 py-3">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center">
+                    <a href="index.html"><img src="img/Logo PNIT.png" alt="Logo PNIT" class="h-12 mr-3"></a>
+                </div>  
+            </div>
+        </div>
+    </header>
+
+
+    <!-- Hero Banner -->
+    <section class="bg-black text-white py-16">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col md:flex-row items-center justify-between">
+                <div class="md:w-1/2 mb-8 md:mb-0">
+                    <h1 class="text-4xl md:text-5xl font-bold uppercase mb-6">Completa Tu Camino</h1>
+                    <p class="text-xl">Un paso más hacia tu transformación con el Dr. Armando Solarte</p>
+                    <div class="mt-8 flex items-center">
+                        <div class="w-12 h-1 bg-secondary mr-4"></div>
+                        <span class="text-secondary text-lg">5 de octubre, 2025</span>
+                    </div>
+                </div>
+                <div class="md:w-2/5">
+                    <div class="relative">
+                        <img src="img/dr-solarte.jpg" alt="Dr. Armando Solarte" class="rounded-lg shadow-xl">
+                        <div class="absolute -bottom-6 -left-6">
+                            <div class="bg-secondary text-white px-4 py-2 rounded-full shadow-lg">
+                                <i class="fas fa-check-circle mr-2"></i> Casi listo
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Completar Pago Pendiente -->
+    <section id="completar-pago" class="py-16">
+        <div class="container mx-auto px-4">
+            <div class="flex items-center justify-center mb-8">
+                <div class="h-1 bg-secondary w-12 mr-2"></div>
+                <h2 class="section-title mb-0 inline-block">COMPLETA TU CAMINO</h2>
+                <div class="h-1 bg-secondary w-12 ml-2"></div>
+            </div>
+            
+            <div class="max-w-3xl mx-auto bg-white p-8 border border-black shadow-xl">
+                <h3 class="text-xl sm:text-2xl font-semibold text-center mb-4 sm:mb-6">Localiza tu reserva</h3>
+                <p class="text-black mb-6 sm:mb-8 text-center text-sm sm:text-base px-2">Si ya diste el primer paso con tu reserva (30% del valor), completa tu camino para asegurar tu lugar en esta experiencia transformadora:</p>
+                
+                <form id="complete-payment-form" class="space-y-4 sm:space-y-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+                        <div>
+                            <label for="email_pago" class="block text-black font-medium mb-2 text-sm sm:text-base">Correo electrónico *</label>
+                            <input type="email" id="email_pago" name="email_pago" class="form-control text-sm sm:text-base" required placeholder="Email usado en tu reserva">
+                        </div>
+                        
+                        <div>
+                            <label for="referencia" class="block text-black font-medium mb-2 text-sm sm:text-base">Referencia de pago</label>
+                            <input type="text" id="referencia" name="referencia" class="form-control text-sm sm:text-base" placeholder="(Opcional) Referencia de tu reserva">
+                        </div>
+                    </div>
+
+                    <div class="pt-4">
+                        <button type="button" id="search-reservation-button" class="bg-gradient-to-r from-blue-primary to-blue-secondary hover:from-blue-600 hover:to-blue-700 text-white font-bold py-3 px-6 rounded-lg w-full text-base sm:text-lg transition-all duration-300 transform hover:scale-105 shadow-lg min-h-[52px] flex items-center justify-center">
+                            🔍 BUSCAR MI RESERVA
+                        </button>
+                    </div>
+                    
+                    <!-- Área de resultados de búsqueda (inicialmente oculta) -->
+                    <div id="reservation-details" class="hidden mt-6 p-6 bg-gray-100 border border-black">
+                        <div class="flex items-center mb-4">
+                            <i class="fas fa-check-circle text-green-500 text-2xl mr-3"></i>
+                            <h4 class="text-xl font-semibold">Detalles de tu reserva:</h4>
+                        </div>
+                        <div id="reservation-info" class="space-y-2 mb-4">
+                            <!-- La información de la reserva se agregará aquí dinámicamente -->
+                        </div>
+                        
+                        <div id="reservation-amount" class="bg-white p-4 border border-gray-300 mb-6">
+                            <p class="font-semibold">Resumen del pago:</p>
+                            <div class="flex justify-between mt-2">
+                                <span>Monto de la reserva (30%):</span>
+                                <span id="reserva-monto">$0</span>
+                            </div>
+                            <div class="flex justify-between mt-1">
+                                <span>Monto restante (70%):</span>
+                                <span id="monto-restante" class="font-semibold">$0</span>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-4">
+                            <button type="submit" id="complete-payment-button" class="bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-bold py-3 px-6 rounded-lg w-full text-lg transition-all duration-300 transform hover:scale-105 shadow-lg">
+                                💳 COMPLETAR MI PAGO
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Mensaje de no encontrado (inicialmente oculto) -->
+                    <div id="reservation-not-found" class="hidden mt-6 p-6 bg-gray-100 border border-black">
+                        <div class="flex items-start">
+                            <div class="mr-3 text-secondary">
+                                <i class="fas fa-exclamation-circle text-xl"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-xl font-semibold mb-2">No encontramos tu reserva</h4>
+                                <p class="text-black mb-4">No hemos podido encontrar una reserva pendiente con los datos proporcionados. Esto puede deberse a:</p>
+                                <ul class="list-disc list-inside mb-4 text-black">
+                                    <li>El correo electrónico ingresado es diferente al usado en la reserva</li>
+                                    <li>Ya completaste el pago total de tu camino</li>
+                                    <li>Aún no has iniciado tu camino con una reserva inicial</li>
+                                </ul>
+                                <div class="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-4">
+                                    <a href="pagos.html" class="bg-gradient-to-r from-blue-primary to-blue-secondary hover:from-blue-600 hover:to-blue-700 text-white font-bold py-2 px-4 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg">
+                                        🚀 COMENZAR MI CAMINO
+                                    </a>
+                                    <button type="button" class="underline" onclick="document.getElementById('reservation-not-found').classList.add('hidden')">Intentar otra vez</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <p class="text-sm text-gray-600 text-center mt-4">
+                        Al hacer clic en "COMPLETAR MI PAGO", serás redirigido a nuestra pasarela de pagos para finalizar tu inscripción a esta experiencia transformadora.
+                    </p>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Imagen inspiradora -->
+    <section class="py-16 bg-black text-white">
+        <div class="container mx-auto px-4">
+            <div class="max-w-3xl mx-auto text-center">
+                <p class="text-3xl font-light italic mb-8">"Completar tu camino es el mayor acto de compromiso con tu transformación"</p>
+                <div class="relative h-64 overflow-hidden rounded-lg shadow-2xl">
+                    <img src="img/hero-image.jpeg" alt="Experiencia transformadora" class="object-cover w-full h-full opacity-50">
+                    <div class="absolute inset-0 flex items-center justify-center">
+                        <div class="text-5xl font-bold">
+                            <i class="fas fa-key mr-3"></i>
+                            <span>5 de octubre</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-black text-white py-12">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col md:flex-row justify-between">
+                <div class="mb-8 md:mb-0 md:w-1/2">
+                    <h3 class="text-2xl font-bold mb-4">El poder de soltar</h3>
+                    <p class="max-w-md">Una experiencia transformadora con el Dr. Armando Solarte para conectar con tu esencia interior, liberar lo que te limita y despertar a una nueva realidad.</p>
+                </div>
+                
+                <div class="md:w-1/2">
+                    <h4 class="text-lg font-semibold mb-4">Contacto</h4>
+                    <ul class="space-y-2">
+                        <li><i class="fas fa-envelope mr-2"></i> info@pnitecnicasolarte.com</li>
+                        <li><i class="fas fa-phone mr-2"></i> +57 316 777 7676</li>
+                        <li><i class="fas fa-map-marker-alt mr-2"></i> Calle 93b # 19 - 44, Casa Dann Carlton, Bogotá</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-800 mt-8 pt-8 text-center text-sm">
+                <p>&copy; 2025 El poder de soltar - Dr. Armando Solarte. Todos los derechos reservados.</p>
+                <p class="mt-2">PNIT - Psiconeuroinmunoterapia Transformadora</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="js/main.js"></script>
+</body>
+</html>

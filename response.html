@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Respuesta de pago - El poder de soltar con Dr. Armando Solarte">
+    <title>Respuesta de Pago | El poder de soltar</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#1e40af',
+                        secondary: '#f7b633',
+                        light: '#f7fafc',
+                        'blue-primary': '#1e40af',
+                        'blue-secondary': '#3b82f6',
+                        'blue-light': '#dbeafe',
+                    },
+                    fontFamily: {
+                        sans: ['Montserrat', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* Estilos personalizados para la página de respuesta */
+        .btn-custom {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px 24px;
+            font-size: 16px;
+            font-weight: 600;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            min-width: 160px;
+        }
+        
+        .btn-primary-custom {
+            background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+            color: white;
+            box-shadow: 0 4px 12px rgba(30, 64, 175, 0.3);
+        }
+        
+        .btn-primary-custom:hover {
+            background: linear-gradient(135deg, #1d4ed8 0%, #2563eb 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(30, 64, 175, 0.4);
+            color: white;
+        }
+        
+        .btn-secondary-custom {
+            background: transparent;
+            color: #1e40af;
+            border: 2px solid #1e40af;
+        }
+        
+        .btn-secondary-custom:hover {
+            background: #1e40af;
+            color: white;
+            transform: translateY(-1px);
+        }
+        
+        .status-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 36px;
+        }
+        
+        .status-success {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+        }
+        
+        .status-error {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white;
+        }
+        
+        .status-pending {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            color: white;
+        }
+        
+        .status-loading {
+            background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
+            color: white;
+        }
+        
+        .spinner {
+            border: 4px solid #f3f4f6;
+            border-top: 4px solid #1e40af;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .countdown-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #1e40af;
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .error-details {
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            border-radius: 8px;
+            padding: 16px;
+            margin-top: 20px;
+        }
+        
+        .success-details {
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            border-radius: 8px;
+            padding: 16px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body class="font-sans bg-light">
+    <!-- Header/Navigation -->
+    <header class="w-full bg-white shadow-md">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center">
+                <img src="img/Logo PNIT.png" alt="Logo PNIT" class="h-12 mr-3">
+                <h1 class="text-xl font-bold text-gray-800">El poder de soltar</h1>
+            </div>
+        </div>
+    </header>
+
+    <!-- Response Section -->
+    <section class="py-16 min-h-screen">
+        <div class="container mx-auto px-4">
+            <div class="max-w-3xl mx-auto bg-white rounded-lg shadow-lg p-8">
+                <div id="status-container" class="text-center">
+                    <!-- Contenido inicial de carga -->
+                    <div id="loading-state">
+                        <div class="status-icon status-loading">
+                            <div class="spinner"></div>
+                        </div>
+                        <h2 class="text-2xl font-bold text-gray-800 mb-4">Procesando tu transacción...</h2>
+                        <p class="text-gray-600 mb-6">Por favor espera mientras verificamos el estado de tu pago.</p>
+                    </div>
+                </div>
+                
+                <!-- Área de botones -->
+                <div id="action-buttons" class="mt-8 text-center hidden">
+                    <div id="countdown-container" class="mb-6">
+                        <p class="text-gray-600 mb-2">Serás redirigido automáticamente en:</p>
+                        <div class="countdown-number" id="countdown">5</div>
+                        <p class="text-sm text-gray-500">segundos</p>
+                    </div>
+                    
+                    <div class="flex flex-col sm:flex-row justify-center gap-4">
+                        <a href="index.html" class="btn-custom btn-primary-custom">
+                            <i class="fas fa-home mr-2"></i>
+                            Volver al inicio
+                        </a>
+                        <button id="view-details-btn" class="btn-custom btn-secondary-custom hidden">
+                            <i class="fas fa-info-circle mr-2"></i>
+                            Ver detalles
+                        </button>
+                        <button id="download-receipt-btn" class="btn-custom btn-secondary-custom hidden">
+                            <i class="fas fa-download mr-2"></i>
+                            Descargar comprobante
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Modal de detalles de transacción -->
+    <div id="transaction-details-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-lg p-8 max-w-2xl w-full max-h-[90vh] overflow-y-auto mx-4">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-xl font-bold text-gray-800">Detalles de la transacción</h3>
+                <button id="close-modal" class="text-gray-500 hover:text-gray-700 transition-colors">
+                    <i class="fas fa-times text-2xl"></i>
+                </button>
+            </div>
+            <div id="transaction-details" class="text-left">
+                <!-- Los detalles se llenarán con JavaScript -->
+            </div>
+        </div>
+    </div>
+    
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-8">
+        <div class="container mx-auto px-4">
+            <div class="text-center">
+                <h3 class="text-xl font-bold mb-2">El poder de soltar</h3>
+                <p class="mb-4">Un evento transformador con el Dr. Armando Solarte</p>
+                <p class="text-sm">&copy; 2025 El poder de soltar. Todos los derechos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript mejorado -->
+    <script>
+        console.log('🔄 Iniciando página de respuesta...');
+        
+        // Sistema de manejo de errores mejorado
+        class ResponseHandler {
+            constructor() {
+                this.urlParams = new URLSearchParams(window.location.search);
+                this.transactionData = null;
+                this.countdownTimer = null;
+                this.countdownValue = 5;
+                
+                this.elements = {
+                    statusContainer: document.getElementById('status-container'),
+                    actionButtons: document.getElementById('action-buttons'),
+                    loadingState: document.getElementById('loading-state'),
+                    viewDetailsBtn: document.getElementById('view-details-btn'),
+                    downloadReceiptBtn: document.getElementById('download-receipt-btn'),
+                    modal: document.getElementById('transaction-details-modal'),
+                    modalDetails: document.getElementById('transaction-details'),
+                    closeModal: document.getElementById('close-modal'),
+                    countdown: document.getElementById('countdown'),
+                    countdownContainer: document.getElementById('countdown-container')
+                };
+                
+                this.init();
+            }
+            
+            init() {
+                try {
+                    console.log('🚀 Inicializando ResponseHandler...');
+                    this.setupEventListeners();
+                    this.processTransaction();
+                } catch (error) {
+                    console.error('❌ Error inicializando ResponseHandler:', error);
+                    this.showError('Error interno del sistema');
+                }
+            }
+            
+            setupEventListeners() {
+                // Event listeners para modal
+                if (this.elements.viewDetailsBtn) {
+                    this.elements.viewDetailsBtn.addEventListener('click', () => {
+                        this.showTransactionDetails();
+                    });
+                }
+                
+                if (this.elements.closeModal) {
+                    this.elements.closeModal.addEventListener('click', () => {
+                        this.hideModal();
+                    });
+                }
+                
+                if (this.elements.downloadReceiptBtn) {
+                    this.elements.downloadReceiptBtn.addEventListener('click', () => {
+                        this.downloadReceipt();
+                    });
+                }
+                
+                // Cerrar modal al hacer clic fuera
+                if (this.elements.modal) {
+                    this.elements.modal.addEventListener('click', (e) => {
+                        if (e.target === this.elements.modal) {
+                            this.hideModal();
+                        }
+                    });
+                }
+                
+                // Manejar tecla Escape
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === 'Escape' && !this.elements.modal.classList.contains('hidden')) {
+                        this.hideModal();
+                    }
+                });
+            }
+            
+            processTransaction() {
+                console.log('💳 Procesando información de transacción...');
+                
+                // Extraer datos de los parámetros URL
+                const estado = this.urlParams.get('x_response') || this.urlParams.get('response') || 'Pendiente';
+                const referencia = this.urlParams.get('ref_payco') || this.urlParams.get('x_ref_payco') || this.urlParams.get('reference');
+                const monto = this.urlParams.get('x_amount') || this.urlParams.get('amount');
+                const motivo = this.urlParams.get('x_response_reason_text') || '';
+                
+                this.transactionData = {
+                    estado: estado,
+                    referencia: referencia || `INV-${Date.now()}`,
+                    monto: monto,
+                    motivo: motivo,
+                    fecha: new Date().toISOString(),
+                    params: Object.fromEntries(this.urlParams.entries())
+                };
+                
+                console.log('📊 Datos de transacción:', this.transactionData);
+                
+                // Procesar según el estado
+                setTimeout(() => {
+                    this.handleTransactionStatus(estado.toLowerCase());
+                }, 1500); // Simular tiempo de procesamiento
+            }
+            
+            handleTransactionStatus(estado) {
+                console.log('🔍 Manejando estado:', estado);
+                
+                this.elements.loadingState.style.display = 'none';
+                this.elements.actionButtons.classList.remove('hidden');
+                
+                switch (estado) {
+                    case 'aceptada':
+                    case 'approved':
+                    case 'success':
+                        this.showSuccess();
+                        break;
+                    case 'rechazada':
+                    case 'declined':
+                    case 'failed':
+                        this.showError('Pago rechazado');
+                        break;
+                    case 'pendiente':
+                    case 'pending':
+                        this.showPending();
+                        break;
+                    default:
+                        this.showError('Estado de transacción desconocido');
+                }
+                
+                // Mostrar botones adicionales si es apropiado
+                if (estado === 'aceptada' || estado === 'approved' || estado === 'success') {
+                    this.elements.downloadReceiptBtn.classList.remove('hidden');
+                }
+                
+                this.elements.viewDetailsBtn.classList.remove('hidden');
+                this.startCountdown();
+            }
+            
+            showSuccess() {
+                console.log('✅ Mostrando estado de éxito');
+                
+                this.elements.statusContainer.innerHTML = `
+                    <div class="fade-in">
+                        <div class="status-icon status-success">
+                            <i class="fas fa-check"></i>
+                </div>
+                        <h2 class="text-3xl font-bold text-green-600 mb-4">¡Pago exitoso!</h2>
+                        <p class="text-lg text-gray-700 mb-4">Tu transacción ha sido procesada correctamente.</p>
+                        
+                        <div class="success-details">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                                <div>
+                                    <strong>Referencia:</strong><br>
+                                    <span class="font-mono text-blue-600">${this.transactionData.referencia}</span>
+                                </div>
+                                ${this.transactionData.monto ? `
+                                <div>
+                                    <strong>Monto:</strong><br>
+                                    <span class="text-green-600 font-semibold">${this.formatCurrency(this.transactionData.monto)}</span>
+                                </div>
+                                ` : ''}
+                                <div>
+                                    <strong>Fecha:</strong><br>
+                                    ${new Date().toLocaleString('es-CO')}
+                                </div>
+                                <div>
+                                    <strong>Estado:</strong><br>
+                                    <span class="text-green-600 font-semibold">Aprobado</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-6 p-4 bg-blue-50 rounded-lg">
+                            <h3 class="font-semibold text-blue-800 mb-2">
+                                <i class="fas fa-info-circle mr-2"></i>
+                                Información importante
+                            </h3>
+                            <ul class="text-sm text-blue-700 space-y-1">
+                                <li>• Recibirás un email de confirmación en los próximos minutos</li>
+                                <li>• Guarda este comprobante para tus registros</li>
+                                <li>• El evento se realizará el 5 de octubre de 2025</li>
+                            </ul>
+                </div>
+                </div>
+                `;
+            }
+            
+            showError(mensaje) {
+                console.error('❌ Mostrando error:', mensaje);
+                
+                const motivoCompleto = this.transactionData.motivo || mensaje;
+                
+                this.elements.statusContainer.innerHTML = `
+                    <div class="fade-in">
+                        <div class="status-icon status-error">
+                            <i class="fas fa-times"></i>
+                        </div>
+                        <h2 class="text-3xl font-bold text-red-600 mb-4">Transacción no exitosa</h2>
+                        <p class="text-lg text-gray-700 mb-4">Hubo un problema con tu pago.</p>
+                        
+                        <div class="error-details">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                                <div class="md:col-span-2">
+                                    <strong>Motivo:</strong><br>
+                                    <span class="text-red-600">${motivoCompleto}</span>
+                                </div>
+                                <div>
+                                    <strong>Referencia:</strong><br>
+                                    <span class="font-mono text-gray-600">${this.transactionData.referencia}</span>
+                                </div>
+                                <div>
+                                    <strong>Fecha:</strong><br>
+                                    ${new Date().toLocaleString('es-CO')}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-6 p-4 bg-yellow-50 rounded-lg">
+                            <h3 class="font-semibold text-yellow-800 mb-2">
+                                <i class="fas fa-lightbulb mr-2"></i>
+                                ¿Qué puedes hacer?
+                            </h3>
+                            <ul class="text-sm text-yellow-700 space-y-1">
+                                <li>• Verificar que los datos de tu tarjeta sean correctos</li>
+                                <li>• Asegurarte de tener fondos suficientes</li>
+                                <li>• Contactar a tu banco si el problema persiste</li>
+                                <li>• Intentar nuevamente con otro método de pago</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="mt-4">
+                            <a href="index.html#formulario" class="btn-custom btn-primary-custom">
+                                <i class="fas fa-redo mr-2"></i>
+                                Intentar nuevamente
+                            </a>
+                        </div>
+                    </div>
+                `;
+                
+                // Cancelar countdown automático para errores
+                this.cancelCountdown();
+            }
+            
+            showPending() {
+                console.log('⏳ Mostrando estado pendiente');
+                
+                this.elements.statusContainer.innerHTML = `
+                    <div class="fade-in">
+                        <div class="status-icon status-pending">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <h2 class="text-3xl font-bold text-yellow-600 mb-4">Pago pendiente</h2>
+                        <p class="text-lg text-gray-700 mb-4">Tu transacción está siendo procesada.</p>
+                        
+                        <div class="error-details bg-yellow-50 border-yellow-200">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                                <div>
+                                    <strong>Referencia:</strong><br>
+                                    <span class="font-mono text-blue-600">${this.transactionData.referencia}</span>
+                                </div>
+                                <div>
+                                    <strong>Fecha:</strong><br>
+                                    ${new Date().toLocaleString('es-CO')}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-6 p-4 bg-blue-50 rounded-lg">
+                            <h3 class="font-semibold text-blue-800 mb-2">
+                                <i class="fas fa-info-circle mr-2"></i>
+                                Ten en cuenta
+                            </h3>
+                            <ul class="text-sm text-blue-700 space-y-1">
+                                <li>• El procesamiento puede tomar algunos minutos</li>
+                                <li>• Recibirás notificación por email cuando se complete</li>
+                                <li>• No realices otro pago mientras este está pendiente</li>
+                            </ul>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            startCountdown() {
+                if (this.elements.countdown && this.elements.countdownContainer) {
+                    this.elements.countdownContainer.style.display = 'block';
+                    
+                    this.countdownTimer = setInterval(() => {
+                        this.countdownValue--;
+                        this.elements.countdown.textContent = this.countdownValue;
+                        
+                        if (this.countdownValue <= 0) {
+                            this.redirectToHome();
+                        }
+                    }, 1000);
+                }
+            }
+            
+            cancelCountdown() {
+                if (this.countdownTimer) {
+                    clearInterval(this.countdownTimer);
+                    this.countdownTimer = null;
+                }
+                if (this.elements.countdownContainer) {
+                    this.elements.countdownContainer.style.display = 'none';
+                }
+            }
+            
+            redirectToHome() {
+                console.log('🏠 Redirigiendo al inicio...');
+                window.location.href = 'index.html';
+            }
+            
+            showTransactionDetails() {
+                if (!this.elements.modal || !this.elements.modalDetails) return;
+                
+                const details = Object.entries(this.transactionData.params)
+                    .filter(([key, value]) => value && value.trim() !== '')
+                    .map(([key, value]) => `
+                        <div class="mb-3">
+                            <strong class="text-gray-700">${this.formatParameterName(key)}:</strong>
+                            <span class="ml-2 ${this.isImportantParam(key) ? 'font-mono text-blue-600' : 'text-gray-600'}">${value}</span>
+                        </div>
+                    `).join('');
+                
+                this.elements.modalDetails.innerHTML = `
+                    <div class="space-y-4">
+                        <div class="bg-gray-50 p-4 rounded-lg">
+                            <h4 class="font-semibold mb-3">Información de la transacción</h4>
+                            ${details || '<p class="text-gray-500">No hay detalles adicionales disponibles.</p>'}
+                        </div>
+                        
+                        <div class="text-xs text-gray-500 border-t pt-3">
+                            <p><strong>Timestamp:</strong> ${new Date().toISOString()}</p>
+                            <p><strong>URL actual:</strong> ${window.location.href}</p>
+                        </div>
+                    </div>
+                `;
+                
+                this.elements.modal.classList.remove('hidden');
+            }
+            
+            hideModal() {
+                if (this.elements.modal) {
+                    this.elements.modal.classList.add('hidden');
+                }
+            }
+            
+            downloadReceipt() {
+                console.log('📄 Iniciando descarga de comprobante...');
+                
+                try {
+                    // Crear datos del comprobante
+                    const receiptData = {
+                        referencia: this.transactionData.referencia,
+                        fecha: new Date().toLocaleString('es-CO'),
+                        monto: this.transactionData.monto || 'N/A',
+                        estado: this.transactionData.estado,
+                        evento: 'El poder de soltar - Dr. Armando Solarte'
+                    };
+                    
+                    this.generatePDFReceipt(receiptData);
+                } catch (error) {
+                    console.error('❌ Error generando comprobante:', error);
+                    alert('Error al generar el comprobante. Por favor, intenta nuevamente.');
+                }
+            }
+            
+            generatePDFReceipt(data) {
+                // Crear HTML para el comprobante
+                const receiptHTML = `
+                <!DOCTYPE html>
+                <html>
+                <head>
+                        <title>Comprobante de Pago - ${data.referencia}</title>
+                    <style>
+                        body { font-family: Arial, sans-serif; margin: 20px; line-height: 1.6; }
+                            .header { text-align: center; margin-bottom: 30px; border-bottom: 2px solid #1e40af; padding-bottom: 20px; }
+                            .content { max-width: 600px; margin: 0 auto; }
+                            .info-row { display: flex; justify-content: space-between; margin-bottom: 10px; }
+                            .total { font-size: 18px; font-weight: bold; color: #1e40af; text-align: center; margin: 20px 0; }
+                            .footer { text-align: center; margin-top: 30px; font-size: 12px; color: #666; }
+                            @media print { .no-print { display: none; } }
+                    </style>
+                </head>
+                <body>
+                        <div class="content">
+                    <div class="header">
+                                <h1>COMPROBANTE DE PAGO</h1>
+                        <h2>El Poder de Soltar</h2>
+                                <p>Dr. Armando Solarte - 5 de Octubre 2025</p>
+                    </div>
+                    
+                            <div class="info-row">
+                                <strong>Referencia:</strong>
+                                <span>${data.referencia}</span>
+                        </div>
+                        
+                            <div class="info-row">
+                                <strong>Fecha de pago:</strong>
+                                <span>${data.fecha}</span>
+                        </div>
+                        
+                            <div class="info-row">
+                                <strong>Estado:</strong>
+                                <span>${data.estado}</span>
+                        </div>
+                        
+                            <div class="info-row">
+                                <strong>Evento:</strong>
+                                <span>${data.evento}</span>
+                        </div>
+                        
+                            ${data.monto !== 'N/A' ? `
+                            <div class="total">
+                                Monto pagado: ${this.formatCurrency(data.monto)}
+                        </div>
+                            ` : ''}
+                            
+                            <div class="footer">
+                                <p>Este comprobante es válido para efectos de control interno.</p>
+                                <p>Para más información, visita nuestro sitio web.</p>
+                                <p>Generado el: ${new Date().toLocaleString('es-CO')}</p>
+                        </div>
+                        </div>
+                        
+                        <div class="no-print" style="text-align: center; margin-top: 20px;">
+                            <button onclick="window.print()" style="padding: 10px 20px; background: #1e40af; color: white; border: none; border-radius: 5px; cursor: pointer;">
+                                Imprimir
+                            </button>
+                    </div>
+                </body>
+                </html>
+            `;
+            
+                // Abrir en nueva ventana
+                const ventana = window.open('', '_blank', 'width=800,height=600');
+                ventana.document.write(receiptHTML);
+                ventana.document.close();
+            }
+            
+            formatCurrency(amount) {
+                try {
+                    const num = parseFloat(amount);
+            return new Intl.NumberFormat('es-CO', {
+                style: 'currency',
+                currency: 'COP',
+                        minimumFractionDigits: 0
+                    }).format(num);
+                } catch (error) {
+                    return `$${amount} COP`;
+                }
+            }
+            
+            formatParameterName(param) {
+                const names = {
+                    'x_response': 'Estado',
+                    'x_ref_payco': 'Referencia ePayco',
+                    'ref_payco': 'Referencia',
+                    'x_amount': 'Monto',
+                    'x_currency_code': 'Moneda',
+                    'x_response_reason_text': 'Motivo',
+                    'x_transaction_date': 'Fecha de transacción',
+                    'x_approval_code': 'Código de aprobación'
+                };
+                return names[param] || param.replace(/_/g, ' ').replace(/^x /, '');
+            }
+            
+            isImportantParam(param) {
+                const important = ['x_ref_payco', 'ref_payco', 'x_amount', 'x_approval_code'];
+                return important.includes(param);
+            }
+        }
+        
+        // Inicializar cuando el DOM esté listo
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('📱 DOM cargado, iniciando ResponseHandler...');
+            new ResponseHandler();
+        });
+        
+        // Manejo de errores globales
+        window.addEventListener('error', function(e) {
+            console.error('❌ Error global:', e.error);
+        });
+        
+        window.addEventListener('unhandledrejection', function(e) {
+            console.error('❌ Promise rechazada:', e.reason);
+        });
+    </script>
+</body>
+</html>

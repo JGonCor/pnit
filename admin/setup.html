@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configuración Inicial - El Poder de Soltar</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body class="bg-gradient-to-br from-purple-50 to-blue-50 min-h-screen">
+    <div class="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-md w-full space-y-8">
+            <div class="text-center">
+                <h2 class="mt-6 text-3xl font-extrabold text-gray-900">
+                    🚀 Configuración Inicial
+                </h2>
+                <p class="mt-2 text-sm text-gray-600">
+                    Crea tu cuenta de administrador para "El Poder de Soltar"
+                </p>
+            </div>
+            
+            <!-- Mensaje de estado -->
+            <div id="message" class="hidden rounded-md p-4"></div>
+            
+            <form id="setup-form" class="mt-8 space-y-6">
+                <div class="rounded-md shadow-sm space-y-4">
+                    <div>
+                        <label for="nombre" class="block text-sm font-medium text-gray-700">
+                            Nombre completo
+                        </label>
+                        <input 
+                            id="nombre" 
+                            name="nombre" 
+                            type="text" 
+                            required 
+                            class="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-purple-500 focus:border-purple-500 focus:z-10 sm:text-sm"
+                            placeholder="Ej: Juan Pérez"
+                        >
+                    </div>
+                    
+                    <div>
+                        <label for="email" class="block text-sm font-medium text-gray-700">
+                            Correo electrónico
+                        </label>
+                        <input 
+                            id="email" 
+                            name="email" 
+                            type="email" 
+                            required 
+                            class="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-purple-500 focus:border-purple-500 focus:z-10 sm:text-sm"
+                            placeholder="admin@tudominio.com"
+                        >
+                    </div>
+                    
+                    <div>
+                        <label for="password" class="block text-sm font-medium text-gray-700">
+                            Contraseña
+                        </label>
+                        <input 
+                            id="password" 
+                            name="password" 
+                            type="password" 
+                            required 
+                            minlength="6"
+                            class="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-purple-500 focus:border-purple-500 focus:z-10 sm:text-sm"
+                            placeholder="Mínimo 6 caracteres"
+                        >
+                    </div>
+                    
+                    <div>
+                        <label for="confirm-password" class="block text-sm font-medium text-gray-700">
+                            Confirmar contraseña
+                        </label>
+                        <input 
+                            id="confirm-password" 
+                            name="confirm-password" 
+                            type="password" 
+                            required 
+                            class="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-purple-500 focus:border-purple-500 focus:z-10 sm:text-sm"
+                            placeholder="Repite la contraseña"
+                        >
+                    </div>
+                </div>
+
+                <div>
+                    <button 
+                        type="submit" 
+                        id="submit-btn"
+                        class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                        <span class="absolute left-0 inset-y-0 flex items-center pl-3">
+                            <i class="fas fa-user-plus group-hover:text-purple-400" aria-hidden="true"></i>
+                        </span>
+                        Crear Administrador
+                    </button>
+                </div>
+            </form>
+            
+            <div class="text-center">
+                <a href="index.html" class="text-purple-600 hover:text-purple-500 text-sm">
+                    ← Volver al panel de administración
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = `${window.location.origin}/api`;
+        
+        document.getElementById('setup-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const submitBtn = document.getElementById('submit-btn');
+            const messageDiv = document.getElementById('message');
+            
+            // Obtener datos del formulario
+            const formData = new FormData(this);
+            const data = {
+                nombre: formData.get('nombre'),
+                email: formData.get('email'),
+                password: formData.get('password'),
+                confirmPassword: formData.get('confirm-password')
+            };
+            
+            // Validaciones
+            if (data.password !== data.confirmPassword) {
+                showMessage('Las contraseñas no coinciden', 'error');
+                return;
+            }
+            
+            if (data.password.length < 6) {
+                showMessage('La contraseña debe tener al menos 6 caracteres', 'error');
+                return;
+            }
+            
+            // Validar email
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(data.email)) {
+                showMessage('Ingresa un correo electrónico válido', 'error');
+                return;
+            }
+            
+            try {
+                // Deshabilitar botón
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Creando...';
+                
+                // Enviar datos al servidor
+                const response = await fetch(`${API_URL}/auth/setup`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        nombre: data.nombre,
+                        email: data.email,
+                        password: data.password
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (!response.ok) {
+                    throw new Error(result.error || 'Error al crear el administrador');
+                }
+                
+                // Éxito
+                showMessage('¡Administrador creado exitosamente! Redirigiendo...', 'success');
+                
+                // Redirigir después de 2 segundos
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 2000);
+                
+            } catch (error) {
+                console.error('Error:', error);
+                showMessage(error.message, 'error');
+                
+                // Rehabilitar botón
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<span class="absolute left-0 inset-y-0 flex items-center pl-3"><i class="fas fa-user-plus group-hover:text-purple-400"></i></span>Crear Administrador';
+            }
+        });
+        
+        function showMessage(text, type) {
+            const messageDiv = document.getElementById('message');
+            const isError = type === 'error';
+            
+            messageDiv.className = `rounded-md p-4 ${isError ? 'bg-red-50 border border-red-200' : 'bg-green-50 border border-green-200'}`;
+            messageDiv.innerHTML = `
+                <div class="flex">
+                    <div class="flex-shrink-0">
+                        <i class="fas ${isError ? 'fa-exclamation-circle text-red-400' : 'fa-check-circle text-green-400'}"></i>
+                    </div>
+                    <div class="ml-3">
+                        <p class="text-sm font-medium ${isError ? 'text-red-800' : 'text-green-800'}">${text}</p>
+                    </div>
+                </div>
+            `;
+            messageDiv.classList.remove('hidden');
+            
+            // Ocultar mensaje después de 5 segundos si es de éxito
+            if (!isError) {
+                setTimeout(() => {
+                    messageDiv.classList.add('hidden');
+                }, 5000);
+            }
+        }
+        
+        // Verificar si ya hay usuarios administradores
+        window.addEventListener('load', async function() {
+            try {
+                const response = await fetch(`${API_URL}/auth/check-setup`);
+                const result = await response.json();
+                
+                if (result.hasAdmin) {
+                    showMessage('Ya existe un administrador. Si olvidaste tu contraseña, contacta al soporte técnico.', 'error');
+                    document.getElementById('setup-form').style.display = 'none';
+                }
+            } catch (error) {
+                console.log('No se pudo verificar el estado de configuración');
+            }
+        });
+    </script>
+</body>
+</html> 

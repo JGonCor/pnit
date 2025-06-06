@@ -1,0 +1,651 @@
+:root {
+    --color-black: #000000;
+    --color-white: #ffffff;
+    --color-accent: #ff4500;
+    --color-background: #f5f5f5;
+    --font-primary: 'Montserrat', sans-serif;
+    --transition-standard: all 0.3s ease;
+    --header-height: 80px;
+}
+
+body {
+    font-family: var(--font-primary);
+    color: var(--color-black);
+    background-color: var(--color-white);
+    margin: 0;
+    padding: 0;
+    line-height: 1.6;
+    overflow-x: hidden;
+    padding-top: var(--header-height); /* Añadir padding para compensar el header fixed */
+}
+
+/* Tipografía */
+h1, h2, h3, h4, h5, h6 {
+    font-weight: 700;
+    margin: 0 0 1rem;
+    line-height: 1.2;
+}
+
+h1 {
+    font-size: 3.5rem;
+    text-transform: uppercase;
+    letter-spacing: -0.02em;
+    font-weight: 900;
+}
+
+/* Estilos específicos para el h1 principal */
+.hero-title {
+    background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 25%, #ea580c  50%, #dc2626 75%, #b91c1c 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    background-size: 200% 200%;
+    animation: gradient-shift 3s ease-in-out infinite;
+    text-shadow: 0 0 30px rgba(251, 191, 36, 0.3);
+    filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.1));
+}
+
+@keyframes gradient-shift {
+    0%, 100% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+}
+
+h2 {
+    font-size: 2.5rem;
+    text-transform: uppercase;
+}
+
+.section-title {
+    text-align: center;
+    font-size: 3rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    margin-bottom: 2rem;
+    position: relative;
+}
+
+.section-subtitle {
+    font-size: 1.5rem;
+    font-weight: 400;
+    margin-top: -1rem;
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+/* Header y Navegación */
+header {
+    background-color: var(--color-white);
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    padding: 1rem 0;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    height: var(--header-height);
+    display: flex;
+    align-items: center;
+}
+
+.nav-link {
+    font-weight: 500;
+    text-transform: uppercase;
+    padding: 0.5rem 1rem;
+    color: var(--color-black);
+    transition: var(--transition-standard);
+}
+
+.nav-link:hover {
+    color: var(--color-accent);
+}
+
+/* Hero Section */
+.hero {
+    min-height: 90vh;
+    background-color: var(--color-white);
+    display: flex;
+    align-items: center;
+    padding: 2rem 0;
+    position: relative;
+    margin-top: 0;
+}
+
+.hero-content {
+    text-align: center;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.hero-subtitle {
+    font-size: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+/* Botones */
+.btn {
+    display: inline-block;
+    font-weight: 600;
+    text-transform: uppercase;
+    padding: 0.75rem 2rem;
+    border: 2px solid var(--color-black);
+    background-color: transparent;
+    color: var(--color-black);
+    text-align: center;
+    transition: var(--transition-standard);
+    cursor: pointer;
+    margin: 0.5rem;
+    text-decoration: none;
+}
+
+.btn:hover {
+    background-color: var(--color-black);
+    color: var(--color-white);
+}
+ 
+.btn-primary {
+    background-color: var(--color-black);
+    color: var(--color-white);
+    border: 2px solid var(--color-black);
+}
+
+.btn-primary:hover {
+    background-color: transparent;
+    color: var(--color-black);
+}
+
+.btn-accent {
+    background-color: var(--color-accent);
+    color: var(--color-white);
+    border: 2px solid var(--color-accent);
+}
+
+.btn-accent:hover {
+    background-color: transparent;
+    color: var(--color-accent);
+}
+
+.btn-large {
+    padding: 1rem 3rem;
+    font-size: 1.25rem;
+}
+
+/* Secciones */
+section {
+    padding: 5rem 0;
+}
+
+section:first-of-type {
+    padding-top: 2rem;
+}
+
+.section-dark {
+    background-color: var(--color-black);
+    color: var(--color-white);
+}
+
+.section-gray {
+    background-color: var(--color-background);
+}
+
+/* Cards */
+.card {
+    background-color: var(--color-white);
+    padding: 2rem;
+    margin-bottom: 2rem;
+    transition: var(--transition-standard);
+}
+
+.card:hover {
+    transform: translateY(-5px);
+}
+
+/* Contador */
+.countdown-container {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin: 2rem 0;
+}
+
+.countdown-container {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.countdown-number {
+    font-family: 'Arial', sans-serif;
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: #FF6F00;
+    line-height: 1.1;
+}
+.countdown-label {
+    font-size: 0.8rem;
+    color: #FFA726;                                                                                                                                                                                                             
+    text-transform: uppercase;
+    margin-top: 0.25rem;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+}
+.countdown-number {
+    animation: pulse 1.5s infinite ease-in-out;
+}
+
+.hero-subtitle {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #FFA726;
+}
+.hero-subtitle::after {
+    content: "";
+    display: block;
+    width: 90%;
+    height: 2px;
+    background-color: #FF6F00;
+    margin-top: 0.5rem;
+}
+
+.countdown-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: var(--color-white);
+    padding: 1rem;
+    min-width: 80px;
+}
+
+.countdown-number {
+    font-size: 2.5rem;
+    font-weight: 700;
+    line-height: 1;
+}
+
+.countdown-label {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+}
+
+/* Banner promocional */
+.promo-banner {
+    background-color: var(--color-accent);
+    color: var(--color-white);
+    text-align: center;
+    padding: 1rem 0;
+    font-size: 1.25rem;
+    font-weight: 600;
+}
+
+/* Formulario */
+.form-control {
+    display: block;
+    width: 100%;
+    padding: 0.75rem;
+    font-size: 1rem;
+    border: 1px solid #ddd;
+    margin-bottom: 1rem;
+    transition: var(--transition-standard);
+}
+
+.form-control:focus {
+    border-color: var(--color-black);
+    outline: none;
+}
+
+/* Footer */
+footer {
+    background-color: var(--color-black);
+    color: var(--color-white);
+    padding: 4rem 0;
+}
+
+.footer-link {
+    color: var(--color-white);
+    transition: var(--transition-standard);
+}
+
+.footer-link:hover {
+    color: var(--color-accent);
+}
+
+.social-links {
+    display: flex;
+    gap: 1rem;
+}
+
+/* Animaciones */
+.animated {
+    animation-duration: 1s;
+    animation-fill-mode: both;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.fade-in {
+    animation-name: fadeIn;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    :root {
+        --header-height: 70px;
+    }
+    
+    h1 {
+        font-size: 2.5rem;
+        font-weight: 900;
+    }
+    
+    .hero-title {
+        background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 25%, #ea580c  50%, #dc2626 75%, #b91c1c 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        background-size: 300% 300%;
+        animation: gradient-shift-mobile 2s ease-in-out infinite;
+        text-shadow: none;
+        filter: drop-shadow(1px 1px 2px rgba(0, 0, 0, 0.1));
+    }
+    
+    @keyframes gradient-shift-mobile {
+        0%, 100% {
+            background-position: 0% 50%;
+        }
+        50% {
+            background-position: 100% 50%;
+        }
+    }
+    
+    h2 {
+        font-size: 2rem;
+    }
+    
+    .countdown-item {
+        min-width: 60px;
+    }
+    
+    .countdown-number {
+        font-size: 2rem;
+    }
+    
+    .section-title {
+        font-size: 2.5rem;
+    }
+}
+
+/* Estilos para el sistema de cupones */
+.cupon-container {
+    background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
+    border-radius: 12px;
+    padding: 20px;
+    margin: 20px 0;
+}
+
+.cupon-badge {
+    background: linear-gradient(135deg, #38b2ac 0%, #319795 100%);
+    color: white;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    display: inline-block;
+    margin-bottom: 8px;
+}
+
+.precio-con-descuento {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+
+.precio-final {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #2d3748;
+}
+
+.precio-original {
+    font-size: 1.5rem;
+    text-decoration: line-through;
+    color: #a0aec0;
+    font-weight: normal;
+}
+
+.cupon-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+}
+
+.descuento-amount {
+    color: #e53e3e;
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+
+.precio-normal {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #2d3748;
+}
+
+.total-con-descuento {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 4px;
+}
+
+.total-final {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #2b6cb0;
+}
+
+.total-original {
+    font-size: 1.2rem;
+    text-decoration: line-through;
+    color: #a0aec0;
+}
+
+.descuento-total {
+    color: #38a169;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.total-normal {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #2b6cb0;
+}
+
+/* Mensajes de cupón */
+.mensaje-exito {
+    color: #38a169 !important;
+    background-color: #f0fff4;
+    border: 1px solid #9ae6b4;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-weight: 600;
+}
+
+.mensaje-error {
+    color: #e53e3e !important;
+    background-color: #fed7d7;
+    border: 1px solid #feb2b2;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-weight: 600;
+}
+
+/* Estilos para facturas */
+.factura-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 30px;
+    text-align: center;
+    border-radius: 12px 12px 0 0;
+}
+
+.factura-content {
+    background: white;
+    padding: 30px;
+    border-radius: 0 0 12px 12px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.factura-numero {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #2d3748;
+    margin-bottom: 10px;
+}
+
+.factura-fecha {
+    color: #718096;
+    margin-bottom: 20px;
+}
+
+.factura-cliente {
+    background: #f7fafc;
+    padding: 20px;
+    border-radius: 8px;
+    margin: 20px 0;
+}
+
+.factura-items {
+    border-top: 2px solid #e2e8f0;
+    border-bottom: 2px solid #e2e8f0;
+    padding: 20px 0;
+    margin: 20px 0;
+}
+
+.factura-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.factura-item:last-child {
+    border-bottom: none;
+}
+
+.factura-totales {
+    text-align: right;
+}
+
+.factura-total-final {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: #2b6cb0;
+    padding: 15px 0;
+    border-top: 2px solid #2b6cb0;
+    margin-top: 10px;
+}
+
+.factura-pago-info {
+    background: #edf2f7;
+    padding: 15px;
+    border-radius: 8px;
+    margin-top: 20px;
+    font-size: 0.9rem;
+    color: #4a5568;
+}
+
+/* Botones de acción para facturas */
+.btn-factura {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin: 10px;
+}
+
+.btn-factura:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+}
+
+.btn-factura:active {
+    transform: translateY(0);
+}
+
+/* Animaciones para cupones */
+@keyframes cupon-aplicado {
+    0% {
+        transform: scale(1);
+        background-color: #f0fff4;
+    }
+    50% {
+        transform: scale(1.05);
+        background-color: #c6f6d5;
+    }
+    100% {
+        transform: scale(1);
+        background-color: #f0fff4;
+    }
+}
+
+.cupon-aplicado-animacion {
+    animation: cupon-aplicado 0.6s ease-in-out;
+}
+
+/* Responsive para cupones */
+@media (max-width: 768px) {
+    .precio-con-descuento {
+        align-items: flex-start;
+    }
+    
+    .total-con-descuento {
+        align-items: flex-start;
+    }
+    
+    .cupon-info {
+        align-items: flex-start;
+    }
+}
+
+/* Loading spinner para facturas */
+.loading-factura {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 3px solid #f3f3f3;
+    border-top: 3px solid #3498db;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}

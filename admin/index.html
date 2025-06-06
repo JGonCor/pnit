@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Panel Administrativo - El poder de soltar</title>
+  <!-- Tailwind CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <!-- Font Awesome -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+  <!-- Estilos personalizados para gestión de asientos -->
+  <link href="css/seats-admin.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100">
+  <!-- Sección de Login -->
+  <div id="login-section" class="min-h-screen flex items-center justify-center">
+    <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
+      <div class="text-center mb-8">
+        <h1 class="text-3xl font-bold text-gray-800">El poder de soltar</h1>
+        <p class="text-gray-600 mt-2">Panel de Administración</p>
+      </div>
+      
+      <div id="login-error" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4 hidden">
+        <span id="login-error-message">Error al iniciar sesión.</span>
+      </div>
+      
+      <form id="login-form" class="space-y-6">
+        <div>
+          <label class="block text-gray-700 text-sm font-medium mb-2" for="email">
+            Correo Electrónico
+          </label>
+          <input id="email" name="email" type="email" required class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-600">
+        </div>
+        
+        <div>
+          <label class="block text-gray-700 text-sm font-medium mb-2" for="password">
+            Contraseña
+          </label>
+          <input id="password" name="password" type="password" required class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-600">
+        </div>
+        
+        <div>
+          <button type="submit" class="w-full bg-purple-600 text-white py-2 px-4 rounded-md hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-600 focus:ring-opacity-50">
+            Iniciar Sesión
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+  
+  <!-- Panel Administrativo (oculto inicialmente) -->
+  <div id="dashboard-section" class="hidden">
+    <!-- Barra lateral -->
+    <div class="flex h-screen bg-gray-100">
+      <div class="fixed inset-0 z-20 transition-opacity bg-black opacity-50 lg:hidden hidden" id="mobile-nav-bg"></div>
+      
+      <div class="fixed inset-y-0 left-0 z-30 w-64 overflow-y-auto transition duration-300 transform bg-purple-700 lg:translate-x-0 lg:static lg:inset-0" id="sidebar">
+        <div class="flex items-center justify-center mt-8">
+          <div class="flex items-center">
+            <span class="mx-2 text-2xl font-semibold text-white">El poder de soltar</span>
+          </div>
+        </div>
+
+        <nav class="mt-10">
+          <a class="flex items-center px-6 py-2 mt-4 text-white bg-opacity-25 bg-purple-800" href="#" data-page="main">
+            <i class="fas fa-tachometer-alt mr-3"></i>
+            Dashboard
+          </a>
+          <a class="flex items-center px-6 py-2 mt-4 text-white hover:bg-purple-800 hover:bg-opacity-25" href="#" data-page="transacciones">
+            <i class="fas fa-money-bill-wave mr-3"></i>
+            Transacciones
+          </a>
+          <a class="flex items-center px-6 py-2 mt-4 text-white hover:bg-purple-800 hover:bg-opacity-25" href="#" data-page="reservas">
+            <i class="fas fa-calendar-check mr-3"></i>
+            Reservas
+          </a>
+          <a class="flex items-center px-6 py-2 mt-4 text-white hover:bg-purple-800 hover:bg-opacity-25" href="#" data-page="asientos">
+            <i class="fas fa-chair mr-3"></i>
+            Gestión de Asientos
+          </a>
+          <a class="flex items-center px-6 py-2 mt-4 text-white hover:bg-purple-800 hover:bg-opacity-25" href="#" data-page="informes">
+            <i class="fas fa-chart-line mr-3"></i>
+            Informes
+          </a>
+          <a class="flex items-center px-6 py-2 mt-4 text-white hover:bg-purple-800 hover:bg-opacity-25" href="#" id="logout-button">
+            <i class="fas fa-sign-out-alt mr-3"></i>
+            Cerrar Sesión
+          </a>
+        </nav>
+      </div>
+      
+      <!-- Contenido principal -->
+      <div class="flex-1 overflow-x-hidden overflow-y-auto">
+        <!-- Barra superior -->
+        <header class="flex items-center justify-between px-6 py-4 bg-white border-b">
+          <div class="flex items-center">
+            <button class="text-gray-500 focus:outline-none lg:hidden" id="mobile-menu-button">
+              <i class="fas fa-bars"></i>
+            </button>
+            <h2 id="page-title" class="text-2xl font-semibold text-gray-800 ml-2 lg:ml-0">Dashboard</h2>
+          </div>
+          
+          <div class="flex items-center">
+            <span id="user-name" class="text-gray-800 mr-2">Administrador</span>
+            <button id="user-menu-button" class="relative z-10 block rounded-md">
+              <i class="fas fa-user-circle text-2xl text-purple-700"></i>
+            </button>
+          </div>
+        </header>
+        
+        <!-- Páginas del Dashboard -->
+        <div id="page-main" class="p-6">
+          <!-- Estadísticas rápidas -->
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+            <div class="bg-white rounded-lg shadow-lg p-6">
+              <div class="flex items-center">
+                <div class="p-3 rounded-full bg-purple-100 text-purple-700 mr-4">
+                  <i class="fas fa-money-bill-wave text-2xl"></i>
+                </div>
+                <div>
+                  <p class="text-gray-500">Total Ventas</p>
+                  <p id="stats-total-ventas" class="text-2xl font-semibold">$0</p>
+                </div>
+              </div>
+            </div>
+            
+            <div class="bg-white rounded-lg shadow-lg p-6">
+              <div class="flex items-center">
+                <div class="p-3 rounded-full bg-blue-100 text-blue-700 mr-4">
+                  <i class="fas fa-ticket-alt text-2xl"></i>
+                </div>
+                <div>
+                  <p class="text-gray-500">Entradas Vendidas</p>
+                  <p id="stats-entradas-vendidas" class="text-2xl font-semibold">0</p>
+                </div>
+              </div>
+            </div>
+            
+            <div class="bg-white rounded-lg shadow-lg p-6">
+              <div class="flex items-center">
+                <div class="p-3 rounded-full bg-green-100 text-green-700 mr-4">
+                  <i class="fas fa-users text-2xl"></i>
+                </div>
+                <div>
+                  <p class="text-gray-500">Total Clientes</p>
+                  <p id="stats-total-clientes" class="text-2xl font-semibold">0</p>
+                </div>
+              </div>
+            </div>
+            
+            <div class="bg-white rounded-lg shadow-lg p-6">
+              <div class="flex items-center">
+                <div class="p-3 rounded-full bg-yellow-100 text-yellow-700 mr-4">
+                  <i class="fas fa-calendar-check text-2xl"></i>
+                </div>
+                <div>
+                  <p class="text-gray-500">Reservas Pendientes</p>
+                  <p id="stats-reservas-pendientes" class="text-2xl font-semibold">0</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Gráfico de ventas -->
+          <div class="bg-white rounded-lg shadow-lg p-6 mb-6">
+            <h3 class="text-xl font-semibold mb-4">Ventas de los últimos 7 días</h3>
+            <div id="sales-chart" class="h-72">
+              <canvas id="sales-chart-canvas"></canvas>
+            </div>
+          </div>
+          
+          <!-- Últimas transacciones -->
+          <div class="bg-white rounded-lg shadow-lg p-6">
+            <div class="flex justify-between items-center mb-4">
+              <h3 class="text-xl font-semibold">Últimas Transacciones</h3>
+              <a href="#" data-page="transacciones" class="text-purple-600 hover:text-purple-800">Ver todas</a>
+            </div>
+            <div class="overflow-x-auto">
+              <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                  <tr>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Referencia</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Cliente</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Monto</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Estado</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Fecha</th>
+                  </tr>
+                </thead>
+                <tbody id="latest-transactions" class="bg-white divide-y divide-gray-200">
+                  <!-- Se llenará dinámicamente -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Página de Transacciones -->
+        <div id="page-transacciones" class="p-6 hidden">
+          <div class="bg-white rounded-lg shadow-lg p-6 mb-6">
+            <div class="flex justify-between items-center mb-4">
+              <h3 class="text-xl font-semibold">Todas las Transacciones</h3>
+              <button id="export-transactions" class="bg-purple-600 text-white py-2 px-4 rounded-md hover:bg-purple-700">
+                <i class="fas fa-file-export mr-2"></i> Exportar a Excel
+              </button>
+            </div>
+            
+            <!-- Filtros -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+              <div>
+                <label class="block text-gray-700 text-sm font-medium mb-2" for="filter-estado">
+                  Estado
+                </label>
+                <select id="filter-estado" class="w-full px-3 py-2 border border-gray-300 rounded-md">
+                  <option value="">Todos</option>
+                  <option value="Aceptada">Aceptada</option>
+                  <option value="Rechazada">Rechazada</option>
+                  <option value="Pendiente">Pendiente</option>
+                </select>
+              </div>
+              
+              <div>
+                <label class="block text-gray-700 text-sm font-medium mb-2" for="filter-tipo">
+                  Tipo
+                </label>
+                <select id="filter-tipo" class="w-full px-3 py-2 border border-gray-300 rounded-md">
+                  <option value="">Todos</option>
+                  <option value="nueva">Nueva Compra</option>
+                  <option value="completar">Completar Reserva</option>
+                </select>
+              </div>
+              
+              <div>
+                <label class="block text-gray-700 text-sm font-medium mb-2" for="filter-email">
+                  Email
+                </label>
+                <input id="filter-email" type="text" class="w-full px-3 py-2 border border-gray-300 rounded-md">
+              </div>
+            </div>
+            
+            <div class="mt-4">
+              <button id="apply-transaction-filters" class="bg-purple-600 text-white py-2 px-4 rounded-md hover:bg-purple-700">
+                <i class="fas fa-filter mr-2"></i> Aplicar Filtros
+              </button>
+              <button id="clear-transaction-filters" class="ml-2 bg-gray-300 text-gray-700 py-2 px-4 rounded-md hover:bg-gray-400">
+                <i class="fas fa-times mr-2"></i> Limpiar Filtros
+              </button>
+            </div>
+            
+            <!-- Tabla de transacciones -->
+            <div class="overflow-x-auto mt-6">
+              <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                  <tr>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Referencia</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tipo</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Cliente</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Entradas</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Monto</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Estado</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Fecha</th>
+                  </tr>
+                </thead>
+                <tbody id="all-transactions" class="bg-white divide-y divide-gray-200">
+                  <!-- Se llenará dinámicamente -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Página de Reservas -->
+        <div id="page-reservas" class="p-6 hidden">
+          <div class="bg-white rounded-lg shadow-lg p-6 mb-6">
+            <div class="flex justify-between items-center mb-4">
+              <h3 class="text-xl font-semibold">Todas las Reservas</h3>
+              <button id="export-reservations" class="bg-purple-600 text-white py-2 px-4 rounded-md hover:bg-purple-700">
+                <i class="fas fa-file-export mr-2"></i> Exportar a Excel
+              </button>
+            </div>
+            
+            <!-- Filtros -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+              <div>
+                <label class="block text-gray-700 text-sm font-medium mb-2" for="filter-reserva-estado">
+                  Estado
+                </label>
+                <select id="filter-reserva-estado" class="w-full px-3 py-2 border border-gray-300 rounded-md">
+                  <option value="">Todos</option>
+                  <option value="completado">Completado</option>
+                  <option value="pendiente">Pendiente</option>
+                  <option value="cancelado">Cancelado</option>
+                </select>
+              </div>
+              
+              <div>
+                <label class="block text-gray-700 text-sm font-medium mb-2" for="filter-reserva-tipo">
+                  Tipo de Pago
+                </label>
+                <select id="filter-reserva-tipo" class="w-full px-3 py-2 border border-gray-300 rounded-md">
+                  <option value="">Todos</option>
+                  <option value="completo">Pago Completo</option>
+                  <option value="reserva">Reserva (30%)</option>
+                </select>
+              </div>
+              
+              <div>
+                <label class="block text-gray-700 text-sm font-medium mb-2" for="filter-reserva-email">
+                  Email
+                </label>
+                <input id="filter-reserva-email" type="text" class="w-full px-3 py-2 border border-gray-300 rounded-md">
+              </div>
+            </div>
+            
+            <div class="mt-4">
+              <button id="apply-reservation-filters" class="bg-purple-600 text-white py-2 px-4 rounded-md hover:bg-purple-700">
+                <i class="fas fa-filter mr-2"></i> Aplicar Filtros
+              </button>
+              <button id="clear-reservation-filters" class="ml-2 bg-gray-300 text-gray-700 py-2 px-4 rounded-md hover:bg-gray-400">
+                <i class="fas fa-times mr-2"></i> Limpiar Filtros
+              </button>
+            </div>
+            
+            <!-- Tabla de reservas -->
+            <div class="overflow-x-auto mt-6">
+              <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                  <tr>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Cliente</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Teléfono</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Cantidad</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tipo Pago</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Pagado</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Estado</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Fecha</th>
+                  </tr>
+                </thead>
+                <tbody id="all-reservations" class="bg-white divide-y divide-gray-200">
+                  <!-- Se llenará dinámicamente -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Página de Gestión de Asientos -->
+        <div id="page-asientos" class="p-6 hidden">
+          <div class="bg-white rounded-lg shadow-lg p-6 mb-6">
+            <div class="flex justify-between items-center mb-4">
+              <h3 class="text-xl font-semibold">Gestión de Asientos</h3>
+              <div class="flex space-x-2">
+                <button id="refresh-seats" class="bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700">
+                  <i class="fas fa-sync-alt mr-2"></i> Actualizar
+                </button>
+                <button id="mark-sold-button" class="bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700">
+                  <i class="fas fa-tag mr-2"></i> Marcar como Vendidos
+                </button>
+                <button id="free-seats-button" class="bg-red-600 text-white py-2 px-4 rounded-md hover:bg-red-700">
+                  <i class="fas fa-unlock mr-2"></i> Liberar Asientos
+                </button>
+              </div>
+            </div>
+            
+                         <!-- Estadísticas de asientos -->
+             <div class="stats-grid grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+               <div class="stats-card bg-green-100 p-4 rounded-lg">
+                 <div class="flex items-center">
+                  <i class="fas fa-check-circle text-green-600 text-2xl mr-3"></i>
+                  <div>
+                    <p class="text-gray-600 text-sm">Disponibles</p>
+                    <p id="seats-available" class="text-2xl font-bold text-green-600">0</p>
+                  </div>
+                </div>
+              </div>
+              
+                             <div class="stats-card bg-yellow-100 p-4 rounded-lg">
+                 <div class="flex items-center">
+                   <i class="fas fa-clock text-yellow-600 text-2xl mr-3"></i>
+                   <div>
+                     <p class="text-gray-600 text-sm">Reservados</p>
+                     <p id="seats-reserved" class="text-2xl font-bold text-yellow-600">0</p>
+                   </div>
+                 </div>
+               </div>
+               
+               <div class="stats-card bg-red-100 p-4 rounded-lg">
+                 <div class="flex items-center">
+                   <i class="fas fa-times-circle text-red-600 text-2xl mr-3"></i>
+                   <div>
+                     <p class="text-gray-600 text-sm">Ocupados</p>
+                     <p id="seats-occupied" class="text-2xl font-bold text-red-600">0</p>
+                   </div>
+                 </div>
+               </div>
+               
+               <div class="stats-card bg-gray-100 p-4 rounded-lg">
+                <div class="flex items-center">
+                  <i class="fas fa-th text-gray-600 text-2xl mr-3"></i>
+                  <div>
+                    <p class="text-gray-600 text-sm">Total</p>
+                    <p id="seats-total" class="text-2xl font-bold text-gray-600">500</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+                         <!-- Filtros -->
+             <div class="filters-container mb-4 p-4 bg-gray-50 rounded-lg">
+               <div class="filters-grid grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div>
+                  <label class="block text-gray-700 text-sm font-medium mb-2">Estado</label>
+                  <select id="filter-seat-status" class="w-full px-3 py-2 border border-gray-300 rounded-md">
+                    <option value="">Todos</option>
+                    <option value="disponible">Disponible</option>
+                    <option value="reservado">Reservado</option>
+                    <option value="ocupado">Ocupado</option>
+                  </select>
+                </div>
+                
+                <div>
+                  <label class="block text-gray-700 text-sm font-medium mb-2">Fila</label>
+                  <select id="filter-row" class="w-full px-3 py-2 border border-gray-300 rounded-md">
+                    <option value="">Todas</option>
+                  </select>
+                </div>
+                
+                <div>
+                  <label class="block text-gray-700 text-sm font-medium mb-2">Sección</label>
+                  <select id="filter-section" class="w-full px-3 py-2 border border-gray-300 rounded-md">
+                    <option value="">Todas</option>
+                    <option value="izquierda">Izquierda</option>
+                    <option value="derecha">Derecha</option>
+                  </select>
+                </div>
+                
+                <div>
+                  <label class="block text-gray-700 text-sm font-medium mb-2">Cliente</label>
+                  <input id="filter-client" type="text" placeholder="Buscar por nombre o email" class="w-full px-3 py-2 border border-gray-300 rounded-md">
+                </div>
+              </div>
+              
+              <div class="mt-4">
+                <button id="apply-seat-filters" class="bg-purple-600 text-white py-2 px-4 rounded-md hover:bg-purple-700">
+                  <i class="fas fa-filter mr-2"></i> Aplicar Filtros
+                </button>
+                <button id="clear-seat-filters" class="ml-2 bg-gray-300 text-gray-700 py-2 px-4 rounded-md hover:bg-gray-400">
+                  <i class="fas fa-times mr-2"></i> Limpiar
+                </button>
+              </div>
+            </div>
+            
+            <!-- Mapa de asientos -->
+            <div class="mb-6">
+              <h4 class="text-lg font-semibold mb-4">Mapa de Asientos</h4>
+                             <div class="flex justify-center mb-4">
+                 <div class="stage bg-gray-800 text-white px-6 py-2 rounded-md">
+                   ESCENARIO
+                 </div>
+               </div>
+              
+                             <!-- Leyenda -->
+               <div class="flex justify-center space-x-6 mb-4">
+                 <div class="legend-item flex items-center">
+                   <div class="w-4 h-4 bg-green-500 rounded mr-2"></div>
+                   <span class="text-sm">Disponible</span>
+                 </div>
+                 <div class="legend-item flex items-center">
+                   <div class="w-4 h-4 bg-yellow-500 rounded mr-2"></div>
+                   <span class="text-sm">Reservado</span>
+                 </div>
+                 <div class="legend-item flex items-center">
+                   <div class="w-4 h-4 bg-red-500 rounded mr-2"></div>
+                   <span class="text-sm">Ocupado</span>
+                 </div>
+                 <div class="legend-item flex items-center">
+                   <div class="w-4 h-4 bg-blue-500 rounded mr-2"></div>
+                   <span class="text-sm">Seleccionado</span>
+                 </div>
+               </div>
+              
+              <!-- Contenedor del mapa de asientos -->
+              <div id="seats-map" class="overflow-auto max-h-96 border border-gray-200 rounded-lg p-4">
+                <!-- Se generará dinámicamente -->
+              </div>
+            </div>
+            
+            <!-- Asientos seleccionados -->
+            <div id="selected-seats-info" class="selected-seats-info hidden bg-blue-50 p-4 rounded-lg mb-4">
+              <h5 class="font-semibold text-blue-800 mb-2">Asientos Seleccionados:</h5>
+              <div id="selected-seats-list" class="text-blue-700"></div>
+            </div>
+            
+            <!-- Tabla de asientos -->
+            <div class="seats-table-container overflow-x-auto">
+              <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                  <tr>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      <input type="checkbox" id="select-all-seats" class="rounded">
+                    </th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Asiento</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Fila</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Sección</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Estado</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Cliente</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tipo Pago</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Fecha</th>
+                  </tr>
+                </thead>
+                <tbody id="seats-table-body" class="bg-white divide-y divide-gray-200">
+                  <!-- Se llenará dinámicamente -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Modal para marcar asientos como vendidos -->
+        <div id="mark-sold-modal" class="modal-backdrop fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden z-50">
+          <div class="modal-content relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+            <div class="mt-3">
+              <h3 class="text-lg font-medium text-gray-900 mb-4">Marcar Asientos como Vendidos</h3>
+              
+              <form id="mark-sold-form">
+                <div class="mb-4">
+                  <label class="block text-gray-700 text-sm font-medium mb-2" for="client-name">
+                    Nombre del Cliente *
+                  </label>
+                  <input id="client-name" name="nombre" type="text" required 
+                         class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-600">
+                </div>
+                
+                <div class="mb-4">
+                  <label class="block text-gray-700 text-sm font-medium mb-2" for="client-email">
+                    Email del Cliente *
+                  </label>
+                  <input id="client-email" name="email" type="email" required 
+                         class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-600">
+                </div>
+                
+                <div class="mb-4">
+                  <label class="block text-gray-700 text-sm font-medium mb-2" for="client-phone">
+                    Teléfono del Cliente
+                  </label>
+                  <input id="client-phone" name="telefono" type="tel" 
+                         class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-600">
+                </div>
+                
+                <div class="mb-4">
+                  <label class="block text-gray-700 text-sm font-medium mb-2" for="client-document">
+                    Documento del Cliente
+                  </label>
+                  <input id="client-document" name="documento" type="text" 
+                         class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-600">
+                </div>
+                
+                <div class="mb-4">
+                  <p class="text-sm text-gray-600">
+                    <strong>Asientos seleccionados:</strong> 
+                    <span id="modal-selected-seats"></span>
+                  </p>
+                </div>
+                
+                <div class="flex items-center justify-between">
+                  <button type="button" id="cancel-mark-sold" 
+                          class="bg-gray-300 text-gray-700 py-2 px-4 rounded-md hover:bg-gray-400">
+                    Cancelar
+                  </button>
+                  <button type="submit" 
+                          class="bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700">
+                    Marcar como Vendidos
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Modal para liberar asientos -->
+        <div id="free-seats-modal" class="modal-backdrop fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden z-50">
+          <div class="modal-content relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+            <div class="mt-3">
+              <h3 class="text-lg font-medium text-gray-900 mb-4">Liberar Asientos</h3>
+              
+              <form id="free-seats-form">
+                <div class="mb-4">
+                  <label class="block text-gray-700 text-sm font-medium mb-2" for="free-reason">
+                    Motivo de liberación
+                  </label>
+                  <textarea id="free-reason" name="motivo" rows="3" 
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-600"
+                            placeholder="Describa el motivo por el cual se liberan estos asientos..."></textarea>
+                </div>
+                
+                <div class="mb-4">
+                  <p class="text-sm text-gray-600">
+                    <strong>Asientos a liberar:</strong> 
+                    <span id="modal-free-seats"></span>
+                  </p>
+                </div>
+                
+                <div class="flex items-center justify-between">
+                  <button type="button" id="cancel-free-seats" 
+                          class="bg-gray-300 text-gray-700 py-2 px-4 rounded-md hover:bg-gray-400">
+                    Cancelar
+                  </button>
+                  <button type="submit" 
+                          class="bg-red-600 text-white py-2 px-4 rounded-md hover:bg-red-700">
+                    Liberar Asientos
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Página de Informes -->
+        <div id="page-informes" class="p-6 hidden">
+          <div class="bg-white rounded-lg shadow-lg p-6 mb-6">
+            <h3 class="text-xl font-semibold mb-4">Generar Informe de Ventas</h3>
+            
+            <!-- Selección de período -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+              <div>
+                <label class="block text-gray-700 text-sm font-medium mb-2" for="informe-fecha-inicio">
+                  Fecha Inicio
+                </label>
+                <input id="informe-fecha-inicio" type="date" class="w-full px-3 py-2 border border-gray-300 rounded-md">
+              </div>
+              
+              <div>
+                <label class="block text-gray-700 text-sm font-medium mb-2" for="informe-fecha-fin">
+                  Fecha Fin
+                </label>
+                <input id="informe-fecha-fin" type="date" class="w-full px-3 py-2 border border-gray-300 rounded-md">
+              </div>
+            </div>
+            
+            <div class="mt-4">
+              <button id="generate-report" class="bg-purple-600 text-white py-2 px-4 rounded-md hover:bg-purple-700">
+                <i class="fas fa-chart-line mr-2"></i> Generar Informe
+              </button>
+            </div>
+            
+            <!-- Informe (se mostrará al generar) -->
+            <div id="report-results" class="mt-6 hidden">
+              <div class="border-b pb-4 mb-4">
+                <h4 class="text-lg font-semibold mb-2">Resumen del Período</h4>
+                <p><strong>Período:</strong> <span id="report-period"></span></p>
+                <p><strong>Total Transacciones:</strong> <span id="report-total-transactions"></span></p>
+                <p><strong>Transacciones Exitosas:</strong> <span id="report-successful-transactions"></span></p>
+                <p><strong>Monto Total:</strong> <span id="report-total-amount"></span></p>
+                <p><strong>Ticket Promedio:</strong> <span id="report-average-ticket"></span></p>
+                <p><strong>Entradas Vendidas:</strong> <span id="report-tickets-sold"></span></p>
+              </div>
+              
+              <div class="border-b pb-4 mb-4">
+                <h4 class="text-lg font-semibold mb-2">Ventas por Día</h4>
+                <div id="report-daily-chart" class="h-72">
+                  <canvas id="report-daily-chart-canvas"></canvas>
+                </div>
+              </div>
+              
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <h4 class="text-lg font-semibold mb-2">Distribución por Tipo de Pago</h4>
+                  <div id="report-payment-type-chart" class="h-60">
+                    <canvas id="report-payment-type-canvas"></canvas>
+                  </div>
+                </div>
+                
+                <div>
+                  <h4 class="text-lg font-semibold mb-2">Distribución por Tipo de Transacción</h4>
+                  <div id="report-transaction-type-chart" class="h-60">
+                    <canvas id="report-transaction-type-canvas"></canvas>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="js/security.js"></script>
+  <script src="js/seats-management.js"></script>
+  <script src="js/admin.js"></script>
+</body>
+</html> 

@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prueba Response.html</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .test-button {
+            display: inline-block;
+            padding: 10px 20px;
+            margin: 5px;
+            background: #007cba;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+        .test-button:hover {
+            background: #005a8b;
+        }
+        .success { background: #28a745; }
+        .success:hover { background: #1e7e34; }
+        .error { background: #dc3545; }
+        .error:hover { background: #c82333; }
+        .warning { background: #ffc107; color: black; }
+        .warning:hover { background: #e0a800; }
+        .info { background: #17a2b8; }
+        .info:hover { background: #138496; }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>🧪 Pruebas para Response.html</h1>
+        <p>Usa estos enlaces para probar diferentes estados de respuesta de ePayco:</p>
+        
+        <h3>✅ Estados de Éxito</h3>
+        <a href="response.html?x_response=Aceptada&x_ref_payco=TEST-SUCCESS-001&x_amount=500000&x_response_reason_text=Transaccion+aprobada&x_transaction_id=12345" 
+           class="test-button success">Pago Exitoso</a>
+        
+        <a href="response.html?x_response=approved&ref_payco=TEST-APPROVED-002&amount=444000&description=Pago+con+cupon" 
+           class="test-button success">Pago con Cupón</a>
+        
+        <h3>❌ Estados de Error</h3>
+        <a href="response.html?x_response=Rechazada&x_ref_payco=TEST-DECLINED-001&x_amount=500000&x_response_reason_text=Fondos+insuficientes" 
+           class="test-button error">Fondos Insuficientes</a>
+        
+        <a href="response.html?x_response=failed&ref_payco=TEST-FAILED-002&amount=500000&reason=Tarjeta+vencida" 
+           class="test-button error">Tarjeta Vencida</a>
+        
+        <h3>⏳ Estados Pendientes</h3>
+        <a href="response.html?x_response=Pendiente&x_ref_payco=TEST-PENDING-001&x_amount=500000&x_response_reason_text=En+proceso+de+verificacion" 
+           class="test-button warning">Pago Pendiente</a>
+        
+        <a href="response.html?response=pending&reference=TEST-PENDING-002&value=150000" 
+           class="test-button warning">Reserva Pendiente</a>
+        
+        <h3>📝 Casos Especiales</h3>
+        <a href="response.html" 
+           class="test-button info">Sin Parámetros</a>
+        
+        <a href="response.html?estado=desconocido&referencia=TEST-UNKNOWN" 
+           class="test-button info">Estado Desconocido</a>
+        
+        <a href="response.html?test=timeout" 
+           class="test-button info">Simular Timeout</a>
+    </div>
+    
+    <div class="test-container">
+        <h3>🧾 Pruebas de Facturas</h3>
+        <p>Usa estos enlaces para probar la visualización y descarga de facturas:</p>
+        
+        <h4>📄 Facturas de Ejemplo</h4>
+        <a href="factura.html?numero=FAC-1735574400000-1&demo=true" 
+           class="test-button success">Ver Factura Completa</a>
+        
+        <a href="factura.html?numero=FAC-1735574400000-2&demo=true" 
+           class="test-button success">Factura con Cupón</a>
+        
+        <a href="factura.html?reserva=123&demo=true" 
+           class="test-button info">Factura por ID Reserva</a>
+        
+        <a href="factura.html?numero=FAC-1735574400000-3&demo=true&download=true" 
+           class="test-button warning">Descarga Automática</a>
+        
+        <h4>🔧 Casos de Error</h4>
+        <a href="factura.html?numero=FAC-INEXISTENTE" 
+           class="test-button error">Factura Inexistente</a>
+        
+        <a href="factura.html" 
+           class="test-button error">Sin Parámetros</a>
+        
+        <h4>🔗 Integración con Confirmation</h4>
+        <a href="confirmation.html?x_response=Aceptada&x_ref_payco=DEMO-FAC-001&x_amount=888000&x_extra1=María+González&x_extra2=maria@example.com&demo=true" 
+           class="test-button success">Ver Confirmación con Factura</a>
+        
+        <h4>📝 Facturas Simuladas con Datos</h4>
+        <div style="font-size: 12px; background: #e3f2fd; padding: 10px; border-radius: 5px; margin-top: 10px;">
+            <p><strong>💡 Tip:</strong> Las facturas de prueba utilizan datos simulados para mostrar todas las funcionalidades:</p>
+            <ul>
+                <li>✅ Cliente con datos completos</li>
+                <li>✅ Reserva con descuentos aplicados</li>
+                <li>✅ Asientos numerados seleccionados</li>
+                <li>✅ Información de accesibilidad</li>
+                <li>✅ Transacciones de ePayco</li>
+                <li>✅ Totales y cálculos correctos</li>
+                <li>🧪 Banner y marca de agua "DEMO"</li>
+                <li>📥 Funcionalidad de descarga PDF</li>
+            </ul>
+        </div>
+    </div>
+    
+    <div class="test-container">
+        <h3>🔍 Información de Depuración</h3>
+        <p><strong>URL Actual:</strong> <span id="current-url"></span></p>
+        <p><strong>Hora:</strong> <span id="current-time"></span></p>
+        
+        <h4>📋 Parámetros Típicos de ePayco:</h4>
+        <ul style="font-size: 12px; background: #f8f9fa; padding: 10px; border-radius: 5px;">
+            <li><strong>x_response:</strong> Estado (Aceptada, Rechazada, Pendiente)</li>
+            <li><strong>x_ref_payco:</strong> Referencia única de ePayco</li>
+            <li><strong>x_amount:</strong> Monto de la transacción</li>
+            <li><strong>x_response_reason_text:</strong> Motivo de la respuesta</li>
+            <li><strong>x_transaction_id:</strong> ID de transacción</li>
+            <li><strong>x_approval_code:</strong> Código de aprobación</li>
+        </ul>
+        
+        <h4>🧾 Parámetros de Facturas:</h4>
+        <ul style="font-size: 12px; background: #fff3cd; padding: 10px; border-radius: 5px;">
+            <li><strong>numero:</strong> Número de factura (FAC-timestamp-id)</li>
+            <li><strong>reserva:</strong> ID de la reserva asociada</li>
+            <li><strong>demo:</strong> Activar modo demostración (true/false)</li>
+            <li><strong>download:</strong> Descarga automática PDF (true/false)</li>
+        </ul>
+    </div>
+    
+    <script>
+        // Actualizar información en tiempo real
+        document.getElementById('current-url').textContent = window.location.href;
+        document.getElementById('current-time').textContent = new Date().toLocaleString('es-CO');
+        
+        // Función para abrir en nueva pestaña
+        document.querySelectorAll('.test-button').forEach(button => {
+            button.addEventListener('click', function(e) {
+                if (e.ctrlKey || e.metaKey) {
+                    // Permitir abrir en nueva pestaña con Ctrl/Cmd + click
+                    return;
+                }
+                e.preventDefault();
+                window.open(this.href, '_blank');
+            });
+        });
+    </script>
+</body>
+</html> 

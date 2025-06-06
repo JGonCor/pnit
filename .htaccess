@@ -1,0 +1,82 @@
+# Apache Configuration for El Poder de Soltar
+# Configuración optimizada para elpoderdesoltar.pnitecnicasolarte.com
+
+# Activar mod_rewrite
+RewriteEngine On
+
+# Forzar HTTPS
+RewriteCond %{HTTPS} off
+RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+# Redirect www to non-www (si aplica)
+RewriteCond %{HTTP_HOST} ^www\.elpoderdesoltar\.pnitecnicasolarte\.com [NC]
+RewriteRule ^(.*)$ https://elpoderdesoltar.pnitecnicasolarte.com/$1 [L,R=301]
+
+# Página principal por defecto
+DirectoryIndex index.html
+
+# Configuración para Node.js API (cPanel específico)
+RewriteCond %{REQUEST_URI} ^/api/
+RewriteRule ^api/(.*)$ http://localhost:3000/api/$1 [P,L]
+
+# Headers de seguridad
+<IfModule mod_headers.c>
+    # Prevenir clickjacking
+    Header always set X-Frame-Options DENY
+    
+    # Prevenir MIME type sniffing
+    Header always set X-Content-Type-Options nosniff
+    
+    # Habilitar XSS protection
+    Header always set X-XSS-Protection "1; mode=block"
+    
+    # Política de referrer
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+    
+    # Content Security Policy básico
+    Header always set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://checkout.epayco.co; style-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data: https:; connect-src 'self' https://secure.epayco.co https://checkout.epayco.co; frame-src 'self' https://checkout.epayco.co;"
+    
+    # Cache control para recursos estáticos
+    <FilesMatch "\.(css|js|png|jpg|jpeg|gif|ico|svg)$">
+        Header set Cache-Control "public, max-age=31536000"
+    </FilesMatch>
+    
+    # Cache control para HTML
+    <FilesMatch "\.(html|htm)$">
+        Header set Cache-Control "public, max-age=3600"
+    </FilesMatch>
+</IfModule>
+
+# Compresión GZIP
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/plain
+    AddOutputFilterByType DEFLATE text/html
+    AddOutputFilterByType DEFLATE text/xml
+    AddOutputFilterByType DEFLATE text/css
+    AddOutputFilterByType DEFLATE application/xml
+    AddOutputFilterByType DEFLATE application/xhtml+xml
+    AddOutputFilterByType DEFLATE application/rss+xml
+    AddOutputFilterByType DEFLATE application/javascript
+    AddOutputFilterByType DEFLATE application/x-javascript
+</IfModule>
+
+# Prevenir acceso a archivos sensibles
+<FilesMatch "^\.">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+<FilesMatch "\.(env|log|conf)$">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+# Prevenir listado de directorios
+Options -Indexes
+
+# Redirecciones específicas para mejorar SEO
+RedirectMatch 301 ^/index\.html$ https://elpoderdesoltar.pnitecnicasolarte.com/
+
+# Error pages personalizadas (opcional)
+ErrorDocument 404 /index.html
+ErrorDocument 500 /index.html 

@@ -1,0 +1,847 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Factura - El poder de soltar con Dr. Armando Solarte">
+    <title>Tu Factura | El poder de soltar</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#1e40af',
+                        secondary: '#f7b633',
+                        light: '#f7fafc',
+                        'blue-primary': '#1e40af',
+                        'blue-secondary': '#3b82f6',
+                        'blue-light': '#dbeafe',
+                    },
+                    fontFamily: {
+                        sans: ['Montserrat', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- jsPDF para generar PDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <!-- html2canvas para capturar el contenido -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    
+    <style>
+        .spinner {
+            border: 4px solid #f3f4f6;
+            border-top: 4px solid #1e40af;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .factura-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .factura-header {
+            background: linear-gradient(135deg, #1e40af, #3b82f6);
+            color: white;
+            padding: 2rem;
+            border-radius: 8px 8px 0 0;
+        }
+
+        .factura-content {
+            padding: 2rem;
+        }
+
+        .info-section {
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: #f8fafc;
+            border-radius: 8px;
+            border-left: 4px solid #1e40af;
+        }
+
+        .table-responsive {
+            overflow-x: auto;
+        }
+
+        .factura-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+        }
+
+        .factura-table th,
+        .factura-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .factura-table th {
+            background: #f1f5f9;
+            font-weight: 600;
+            color: #334155;
+        }
+
+        .total-section {
+            background: #1e40af;
+            color: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-top: 2rem;
+        }
+
+        @media print {
+            .no-print {
+                display: none !important;
+            }
+            
+            .factura-container {
+                box-shadow: none;
+                border: 1px solid #ddd;
+            }
+            
+            body {
+                background: white !important;
+            }
+        }
+
+        .btn-download {
+            background: linear-gradient(135deg, #059669, #10b981);
+            transition: all 0.3s ease;
+        }
+
+        .btn-download:hover {
+            background: linear-gradient(135deg, #047857, #059669);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 15px rgba(5, 150, 105, 0.3);
+        }
+
+        .btn-print {
+            background: linear-gradient(135deg, #7c3aed, #8b5cf6);
+            transition: all 0.3s ease;
+        }
+
+        .btn-print:hover {
+            background: linear-gradient(135deg, #6d28d9, #7c3aed);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 15px rgba(124, 58, 237, 0.3);
+        }
+    </style>
+</head>
+<body class="font-sans bg-gray-50">
+    <!-- Header/Navigation -->
+    <header class="w-full bg-white shadow-md no-print">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center">
+                <img src="img/Logo PNIT.png" alt="Logo PNIT" class="h-12 mr-3">
+            </div>
+            <nav class="hidden md:flex space-x-6">
+                <a href="index.html" class="text-gray-700 hover:text-primary transition-colors">Inicio</a>
+                <a href="pagos.html" class="text-gray-700 hover:text-primary transition-colors">Reservar</a>
+                <a href="reserva.html" class="text-gray-700 hover:text-primary transition-colors">Mi Reserva</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Loading Section -->
+    <section id="loading" class="py-16">
+        <div class="container mx-auto px-4 text-center">
+            <div class="spinner mx-auto mb-4"></div>
+            <h2 class="text-2xl font-bold text-gray-800 mb-2">Cargando tu factura...</h2>
+            <p class="text-gray-600">Por favor espera mientras obtenemos la información.</p>
+        </div>
+    </section>
+
+    <!-- Error Section -->
+    <section id="error" class="py-16 hidden">
+        <div class="container mx-auto px-4">
+            <div class="max-w-2xl mx-auto bg-white rounded-lg shadow-lg p-8 text-center">
+                <div class="bg-red-100 text-red-700 rounded-full h-20 w-20 flex items-center justify-center mx-auto mb-6">
+                    <i class="fas fa-exclamation-triangle text-4xl"></i>
+                </div>
+                <h2 class="text-2xl font-bold text-gray-800 mb-4">Factura no encontrada</h2>
+                <p class="text-gray-600 mb-6" id="error-message">No se pudo encontrar la factura solicitada.</p>
+                <div class="space-x-4">
+                    <a href="reserva.html" class="btn-primary">Buscar mi reserva</a>
+                    <a href="index.html" class="btn-secondary">Volver al inicio</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Factura Section -->
+    <section id="factura-section" class="py-16 hidden">
+        <div class="container mx-auto px-4">
+            <!-- Botones de acción -->
+            <div class="text-center mb-8 no-print">
+                <div class="space-x-4">
+                    <button id="btn-download" class="btn-download text-white font-bold py-3 px-6 rounded-lg shadow-lg">
+                        <i class="fas fa-download mr-2"></i>
+                        Descargar PDF
+                    </button>
+                    <button id="btn-print" class="btn-print text-white font-bold py-3 px-6 rounded-lg shadow-lg">
+                        <i class="fas fa-print mr-2"></i>
+                        Imprimir
+                    </button>
+                    <a href="reserva.html" class="bg-gray-600 hover:bg-gray-700 text-white font-bold py-3 px-6 rounded-lg shadow-lg transition-all duration-300">
+                        <i class="fas fa-arrow-left mr-2"></i>
+                        Volver
+                    </a>
+                </div>
+            </div>
+
+            <!-- Contenido de la factura -->
+            <div id="factura-content" class="factura-container">
+                <!-- Header de la factura -->
+                <div class="factura-header">
+                    <div class="flex flex-col md:flex-row justify-between items-start">
+                        <div>
+                            <h1 class="text-3xl font-bold mb-2">FACTURA</h1>
+                            <p class="text-blue-100" id="factura-numero">Número: FAC-000000</p>
+                            <p class="text-blue-100" id="factura-fecha">Fecha: --/--/----</p>
+                        </div>
+                        <div class="mt-4 md:mt-0">
+                            <img src="img/Logo PNIT.png" alt="Logo PNIT" class="h-16 opacity-90">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="factura-content">
+                    <!-- Información de la empresa -->
+                    <div class="info-section">
+                        <h3 class="text-lg font-semibold text-gray-800 mb-3">
+                            <i class="fas fa-building mr-2 text-primary"></i>
+                            Información del Organizador
+                        </h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <p class="text-gray-700"><strong>PNIT - Técnica Solarte</strong></p>
+                                <p class="text-gray-600">Programación Neurolingüística</p>
+                                <p class="text-gray-600">info@pnitecnicasolarte.com</p>
+                            </div>
+                            <div>
+                                <p class="text-gray-600">+57 316 777 7676</p>
+                                <p class="text-gray-600">Bogotá, Colombia</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Información del cliente -->
+                    <div class="info-section">
+                        <h3 class="text-lg font-semibold text-gray-800 mb-3">
+                            <i class="fas fa-user mr-2 text-primary"></i>
+                            Información del Cliente
+                        </h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <p class="text-gray-700"><strong id="cliente-nombre">Nombre del Cliente</strong></p>
+                                <p class="text-gray-600" id="cliente-email">cliente@email.com</p>
+                            </div>
+                            <div>
+                                <p class="text-gray-600" id="cliente-telefono">Teléfono</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Información del evento -->
+                    <div class="info-section">
+                        <h3 class="text-lg font-semibold text-gray-800 mb-3">
+                            <i class="fas fa-calendar-alt mr-2 text-primary"></i>
+                            Información del Evento
+                        </h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <p class="text-gray-700"><strong id="evento-nombre">El Poder de Soltar</strong></p>
+                                <p class="text-gray-600" id="evento-descripcion">Experiencia transformadora</p>
+                            </div>
+                            <div>
+                                <p class="text-gray-600"><strong>Fecha:</strong> <span id="evento-fecha">5 de octubre, 2025</span></p>
+                                <p class="text-gray-600"><strong>Lugar:</strong> <span id="evento-lugar">Casa Dann Carlton, Bogotá</span></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Detalles de la reserva -->
+                    <div class="info-section">
+                        <h3 class="text-lg font-semibold text-gray-800 mb-3">
+                            <i class="fas fa-ticket-alt mr-2 text-primary"></i>
+                            Detalles de la Reserva
+                        </h3>
+                        
+                        <div class="table-responsive">
+                            <table class="factura-table">
+                                <thead>
+                                    <tr>
+                                        <th>Descripción</th>
+                                        <th>Cantidad</th>
+                                        <th>Precio Unitario</th>
+                                        <th>Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="detalles-reserva">
+                                    <!-- Se llena dinámicamente -->
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Información adicional -->
+                        <div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <p class="text-sm text-gray-600"><strong>Reserva ID:</strong> <span id="reserva-id">000</span></p>
+                                <p class="text-sm text-gray-600"><strong>Tipo de Pago:</strong> <span id="tipo-pago">Completo</span></p>
+                                <div id="asientos-info" class="hidden">
+                                    <p class="text-sm text-gray-600"><strong>Asientos:</strong> <span id="asientos-seleccionados">--</span></p>
+                                </div>
+                            </div>
+                            <div>
+                                <div id="descuento-info" class="hidden">
+                                    <p class="text-sm text-green-600"><strong>Cupón aplicado:</strong> <span id="codigo-cupon">--</span></p>
+                                    <p class="text-sm text-green-600"><strong>Descuento:</strong> <span id="descuento-monto">$0</span></p>
+                                </div>
+                                <div id="accesibilidad-info" class="hidden">
+                                    <p class="text-sm text-blue-600"><strong>Accesibilidad:</strong> <span id="accesibilidad-detalles">Requerida</span></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Información de la transacción -->
+                    <div class="info-section">
+                        <h3 class="text-lg font-semibold text-gray-800 mb-3">
+                            <i class="fas fa-credit-card mr-2 text-primary"></i>
+                            Información de Pago
+                        </h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <p class="text-gray-600"><strong>Referencia:</strong> <span id="transaccion-referencia">--</span></p>
+                                <p class="text-gray-600"><strong>Estado:</strong> <span id="transaccion-estado" class="text-green-600 font-semibold">--</span></p>
+                            </div>
+                            <div>
+                                <p class="text-gray-600"><strong>Método:</strong> <span id="transaccion-metodo">--</span></p>
+                                <p class="text-gray-600"><strong>Banco:</strong> <span id="transaccion-banco">--</span></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Totales -->
+                    <div class="total-section">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-blue-100">Subtotal:</span>
+                            <span class="text-xl" id="subtotal">$0</span>
+                        </div>
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-blue-100">IVA (0%):</span>
+                            <span class="text-xl" id="iva">$0</span>
+                        </div>
+                        <div class="border-t border-blue-300 pt-2">
+                            <div class="flex justify-between items-center">
+                                <span class="text-xl font-bold">TOTAL:</span>
+                                <span class="text-3xl font-bold" id="total">$0</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Estado de la factura -->
+                    <div class="mt-6 p-4 bg-green-50 border border-green-200 rounded-lg">
+                        <div class="flex items-center">
+                            <i class="fas fa-check-circle text-green-600 text-xl mr-3"></i>
+                            <div>
+                                <p class="text-green-800 font-semibold" id="estado-factura">Factura Pagada</p>
+                                <p class="text-green-600 text-sm">Esta factura ha sido procesada correctamente.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Nota importante -->
+                    <div class="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                        <h4 class="font-semibold text-blue-800 mb-2">📋 Importante:</h4>
+                        <ul class="text-blue-700 text-sm space-y-1">
+                            <li>• Conserva esta factura como comprobante de tu reserva</li>
+                            <li>• Presenta este documento al momento del evento</li>
+                            <li>• Para cualquier consulta, contacta: info@pnitecnicasolarte.com</li>
+                            <li>• El evento se realizará el 5 de octubre de 2025</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-8 no-print">
+        <div class="container mx-auto px-4">
+            <div class="text-center">
+                <h3 class="text-xl font-bold mb-2">El poder de soltar</h3>
+                <p class="mb-4">Un evento transformador con el Dr. Armando Solarte</p>
+                <p class="text-sm">&copy; 2025 PNIT - Técnica Solarte. Todos los derechos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        class FacturaViewer {
+            constructor() {
+                this.urlParams = new URLSearchParams(window.location.search);
+                this.numeroFactura = this.urlParams.get('numero') || this.urlParams.get('factura');
+                this.reservaId = this.urlParams.get('reserva');
+                this.autoDownload = this.urlParams.get('download') === 'true';
+                this.modoDemo = this.urlParams.get('demo') === 'true';
+                
+                console.log('🔄 Iniciando FacturaViewer...');
+                console.log('📋 Número de factura:', this.numeroFactura);
+                console.log('📋 ID de reserva:', this.reservaId);
+                console.log('📋 Descarga automática:', this.autoDownload);
+                console.log('📋 Modo demo:', this.modoDemo);
+                
+                if (!this.numeroFactura && !this.reservaId) {
+                    this.showError('No se proporcionó un número de factura o ID de reserva válido.');
+                    return;
+                }
+                
+                this.init();
+            }
+            
+            async init() {
+                try {
+                    let facturaData;
+                    
+                    if (this.modoDemo) {
+                        // Usar datos simulados para demostración
+                        facturaData = this.generarFacturaDemo();
+                    } else {
+                        if (this.numeroFactura) {
+                            facturaData = await this.obtenerFacturaPorNumero(this.numeroFactura);
+                        } else if (this.reservaId) {
+                            facturaData = await this.obtenerFacturasPorReserva(this.reservaId);
+                        }
+                    }
+                    
+                    if (facturaData) {
+                        this.mostrarFactura(facturaData);
+                        this.setupEventListeners();
+                        
+                        // Si se solicita descarga automática
+                        if (this.autoDownload) {
+                            setTimeout(() => {
+                                this.descargarPDF();
+                            }, 1000);
+                        }
+                    }
+                    
+                } catch (error) {
+                    console.error('❌ Error cargando factura:', error);
+                    this.showError('Error al cargar la factura. Inténtalo nuevamente.');
+                }
+            }
+            
+            async obtenerFacturaPorNumero(numeroFactura) {
+                try {
+                    const response = await fetch(`/api/reservas/factura/${numeroFactura}`);
+                    
+                    if (!response.ok) {
+                        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                    }
+                    
+                    const data = await response.json();
+                    return data.factura;
+                    
+                } catch (error) {
+                    console.error('❌ Error obteniendo factura:', error);
+                    throw error;
+                }
+            }
+            
+            async obtenerFacturasPorReserva(reservaId) {
+                try {
+                    const response = await fetch(`/api/reservas/${reservaId}/facturas`);
+                    
+                    if (!response.ok) {
+                        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                    }
+                    
+                    const data = await response.json();
+                    
+                    if (data.facturas && data.facturas.length > 0) {
+                        // Retornar la factura más reciente
+                        return data.facturas[0];
+                    } else {
+                        throw new Error('No se encontraron facturas para esta reserva');
+                    }
+                    
+                } catch (error) {
+                    console.error('❌ Error obteniendo facturas:', error);
+                    throw error;
+                }
+            }
+            
+            mostrarFactura(facturaData) {
+                console.log('📄 Mostrando factura:', facturaData);
+                
+                const datos = facturaData.datos_factura;
+                
+                // Ocultar loading y mostrar factura
+                document.getElementById('loading').classList.add('hidden');
+                document.getElementById('factura-section').classList.remove('hidden');
+                
+                // Mostrar indicador de modo demo si aplica
+                if (this.modoDemo) {
+                    this.mostrarIndicadorDemo();
+                }
+                
+                // Llenar información básica
+                document.getElementById('factura-numero').textContent = `Número: ${datos.numero}`;
+                document.getElementById('factura-fecha').textContent = `Fecha: ${this.formatearFecha(datos.fecha)}`;
+                
+                // Información del cliente
+                document.getElementById('cliente-nombre').textContent = datos.cliente.nombre;
+                document.getElementById('cliente-email').textContent = datos.cliente.email;
+                document.getElementById('cliente-telefono').textContent = datos.cliente.telefono;
+                
+                // Información del evento
+                document.getElementById('evento-nombre').textContent = datos.evento.nombre;
+                document.getElementById('evento-descripcion').textContent = datos.evento.descripcion;
+                document.getElementById('evento-fecha').textContent = datos.evento.fecha;
+                document.getElementById('evento-lugar').textContent = datos.evento.lugar;
+                
+                // Detalles de la reserva
+                this.llenarDetallesReserva(datos.reserva);
+                
+                // Información de transacción
+                document.getElementById('transaccion-referencia').textContent = datos.transaccion.referencia;
+                document.getElementById('transaccion-estado').textContent = datos.transaccion.estado;
+                document.getElementById('transaccion-metodo').textContent = datos.transaccion.metodo_pago;
+                document.getElementById('transaccion-banco').textContent = datos.transaccion.banco;
+                
+                // Totales
+                document.getElementById('subtotal').textContent = this.formatearMoneda(datos.facturacion.subtotal);
+                document.getElementById('iva').textContent = this.formatearMoneda(datos.facturacion.iva_valor);
+                document.getElementById('total').textContent = this.formatearMoneda(datos.facturacion.total);
+                
+                // Estado de la factura
+                document.getElementById('estado-factura').textContent = datos.estado;
+                
+                // Información adicional
+                document.getElementById('reserva-id').textContent = datos.reserva.id;
+                document.getElementById('tipo-pago').textContent = this.formatearTipoPago(datos.reserva.tipo_pago);
+                
+                // Mostrar descuento si aplica
+                if (datos.reserva.descuento_aplicado) {
+                    document.getElementById('descuento-info').classList.remove('hidden');
+                    document.getElementById('codigo-cupon').textContent = datos.reserva.codigo_cupon || 'SOLTAR';
+                    document.getElementById('descuento-monto').textContent = this.formatearMoneda(datos.reserva.descuento_monto);
+                }
+                
+                // Mostrar asientos si están disponibles
+                if (datos.reserva.asientos_seleccionados) {
+                    try {
+                        const asientos = typeof datos.reserva.asientos_seleccionados === 'string' 
+                            ? JSON.parse(datos.reserva.asientos_seleccionados)
+                            : datos.reserva.asientos_seleccionados;
+                        
+                        if (asientos && asientos.length > 0) {
+                            document.getElementById('asientos-info').classList.remove('hidden');
+                            document.getElementById('asientos-seleccionados').textContent = asientos.join(', ');
+                        }
+                    } catch (e) {
+                        console.warn('Error parseando asientos:', e);
+                    }
+                }
+                
+                // Mostrar accesibilidad si aplica
+                if (datos.reserva.tiene_discapacidad) {
+                    document.getElementById('accesibilidad-info').classList.remove('hidden');
+                    document.getElementById('accesibilidad-detalles').textContent = 
+                        `${datos.reserva.num_movilidad_reducida} persona(s) con movilidad reducida`;
+                }
+            }
+            
+            llenarDetallesReserva(reserva) {
+                const tbody = document.getElementById('detalles-reserva');
+                tbody.innerHTML = '';
+                
+                // Crear fila principal
+                const row = document.createElement('tr');
+                
+                let descripcion = `Entrada - ${reserva.cantidad > 1 ? 'Entradas' : 'Entrada'} para "El Poder de Soltar"`;
+                if (reserva.descuento_aplicado) {
+                    descripcion += ' (Con descuento)';
+                }
+                
+                row.innerHTML = `
+                    <td class="font-medium">${descripcion}</td>
+                    <td class="text-center">${reserva.cantidad}</td>
+                    <td class="text-right">${this.formatearMoneda(reserva.precio_unitario)}</td>
+                    <td class="text-right font-semibold">${this.formatearMoneda(reserva.precio_unitario * reserva.cantidad)}</td>
+                `;
+                
+                tbody.appendChild(row);
+                
+                // Agregar fila de descuento si aplica
+                if (reserva.descuento_aplicado && reserva.descuento_monto > 0) {
+                    const discountRow = document.createElement('tr');
+                    discountRow.innerHTML = `
+                        <td class="font-medium text-green-600">Descuento aplicado (${reserva.codigo_cupon || 'SOLTAR'})</td>
+                        <td class="text-center">-</td>
+                        <td class="text-right">-</td>
+                        <td class="text-right font-semibold text-green-600">-${this.formatearMoneda(reserva.descuento_monto)}</td>
+                    `;
+                    tbody.appendChild(discountRow);
+                }
+            }
+            
+            setupEventListeners() {
+                // Botón de descarga PDF
+                document.getElementById('btn-download').addEventListener('click', () => {
+                    this.descargarPDF();
+                });
+                
+                // Botón de imprimir
+                document.getElementById('btn-print').addEventListener('click', () => {
+                    window.print();
+                });
+            }
+            
+            async descargarPDF() {
+                const button = document.getElementById('btn-download');
+                const originalText = button.innerHTML;
+                
+                try {
+                    // Cambiar botón a estado de carga
+                    button.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Generando PDF...';
+                    button.disabled = true;
+                    
+                    // Obtener el contenido de la factura
+                    const facturaElement = document.getElementById('factura-content');
+                    
+                    // Usar html2canvas para capturar el contenido
+                    const canvas = await html2canvas(facturaElement, {
+                        scale: 2,
+                        useCORS: true,
+                        allowTaint: true,
+                        backgroundColor: '#ffffff'
+                    });
+                    
+                    // Crear PDF con jsPDF
+                    const { jsPDF } = window.jspdf;
+                    const pdf = new jsPDF();
+                    
+                    const imgData = canvas.toDataURL('image/png');
+                    const imgWidth = 210;
+                    const pageHeight = 295;
+                    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+                    let heightLeft = imgHeight;
+                    
+                    let position = 0;
+                    
+                    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+                    heightLeft -= pageHeight;
+                    
+                    while (heightLeft >= 0) {
+                        position = heightLeft - imgHeight;
+                        pdf.addPage();
+                        pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+                        heightLeft -= pageHeight;
+                    }
+                    
+                    // Generar nombre del archivo
+                    const numeroFactura = document.getElementById('factura-numero').textContent.replace('Número: ', '');
+                    const nombreArchivo = `Factura_${numeroFactura}_El_Poder_de_Soltar.pdf`;
+                    
+                    // Descargar el PDF
+                    pdf.save(nombreArchivo);
+                    
+                } catch (error) {
+                    console.error('❌ Error generando PDF:', error);
+                    alert('Error al generar el PDF. Inténtalo nuevamente.');
+                } finally {
+                    // Restaurar botón
+                    button.innerHTML = originalText;
+                    button.disabled = false;
+                }
+            }
+            
+            showError(message) {
+                document.getElementById('loading').classList.add('hidden');
+                document.getElementById('error').classList.remove('hidden');
+                document.getElementById('error-message').textContent = message;
+            }
+            
+            formatearFecha(fecha) {
+                try {
+                    const date = new Date(fecha);
+                    return date.toLocaleDateString('es-CO', {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    });
+                } catch (e) {
+                    return fecha;
+                }
+            }
+            
+            formatearMoneda(monto) {
+                try {
+                    const numero = parseFloat(monto);
+                    return new Intl.NumberFormat('es-CO', {
+                        style: 'currency',
+                        currency: 'COP',
+                        minimumFractionDigits: 0
+                    }).format(numero);
+                } catch (e) {
+                    return `$${monto}`;
+                }
+            }
+            
+            formatearTipoPago(tipo) {
+                const tipos = {
+                    'completo': 'Pago Completo',
+                    'reserva': 'Reserva (30%)',
+                    'completar': 'Completar Pago'
+                };
+                return tipos[tipo] || tipo;
+            }
+            
+            generarFacturaDemo() {
+                // Determinar tipo de factura demo basado en el número
+                const numeroFactura = this.numeroFactura || `FAC-${Date.now()}-DEMO`;
+                const tipoDemo = numeroFactura.includes('-2') ? 'conCupon' : 
+                               numeroFactura.includes('-3') ? 'reserva' : 'completo';
+                
+                // Datos base
+                const fecha = new Date().toISOString();
+                const cantidad = 2;
+                const precioRegular = 500000;
+                const precioConCupon = 444000;
+                const tieneCupon = tipoDemo === 'conCupon';
+                const precioUnitario = tieneCupon ? precioConCupon : precioRegular;
+                const montoTotal = precioUnitario * cantidad;
+                const descuentoMonto = tieneCupon ? 56000 * cantidad : 0;
+                
+                // Determinar estado y tipo de operación
+                let estadoFactura, tipoOperacion, montoPagado;
+                if (tipoDemo === 'reserva') {
+                    estadoFactura = 'Factura de Reserva (30% del total)';
+                    tipoOperacion = 'reserva';
+                    montoPagado = Math.round(montoTotal * 0.3);
+                } else {
+                    estadoFactura = 'Factura de Pago Completo (100% del total)';
+                    tipoOperacion = 'completo';
+                    montoPagado = montoTotal;
+                }
+                
+                return {
+                    id: 1,
+                    numero_factura: numeroFactura,
+                    reserva_id: this.reservaId || 123,
+                    created_at: fecha,
+                    datos_factura: {
+                        numero: numeroFactura,
+                        fecha: fecha,
+                        tipo_operacion: tipoOperacion,
+                        estado: estadoFactura,
+                        cliente: {
+                            nombre: 'María Elena González Rodríguez',
+                            email: 'maria.gonzalez@example.com',
+                            telefono: '+57 315 123 4567'
+                        },
+                        evento: {
+                            nombre: 'El Poder de Soltar',
+                            fecha: '5 de octubre, 2025',
+                            lugar: 'Casa Dann Carlton, Bogotá',
+                            descripcion: 'Experiencia transformadora con el Dr. Armando Solarte'
+                        },
+                        reserva: {
+                            id: this.reservaId || 123,
+                            cantidad: cantidad,
+                            tipo_pago: tipoOperacion,
+                            precio_unitario: precioUnitario,
+                            monto_total: montoTotal,
+                            monto_pagado: montoPagado,
+                            descuento_aplicado: tieneCupon,
+                            codigo_cupon: tieneCupon ? 'SOLTAR' : null,
+                            descuento_monto: descuentoMonto,
+                            asientos_seleccionados: ['D01-05', 'D01-06'],
+                            tiene_discapacidad: tipoDemo === 'conCupon',
+                            num_movilidad_reducida: tipoDemo === 'conCupon' ? 1 : 0
+                        },
+                        facturacion: {
+                            subtotal: montoPagado,
+                            iva_porcentaje: 0,
+                            iva_valor: 0,
+                            total: montoPagado,
+                            moneda: 'COP'
+                        },
+                        transaccion: {
+                            referencia: `DEMO-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+                            estado: 'Aceptada',
+                            metodo_pago: 'Tarjeta de Crédito',
+                            banco: 'Banco Ejemplo',
+                            fecha_transaccion: fecha,
+                            codigo_autorizacion: '123456'
+                        }
+                                         }
+                 };
+             }
+             
+             mostrarIndicadorDemo() {
+                 // Crear banner de modo demo
+                 const demoBanner = document.createElement('div');
+                 demoBanner.className = 'fixed top-0 left-0 right-0 bg-orange-500 text-white text-center py-2 z-50 shadow-lg';
+                 demoBanner.innerHTML = `
+                     <div class="flex items-center justify-center">
+                         <i class="fas fa-flask mr-2"></i>
+                         <strong>MODO DEMO</strong> - Esta es una factura de prueba con datos simulados
+                         <i class="fas fa-flask ml-2"></i>
+                     </div>
+                 `;
+                 document.body.insertBefore(demoBanner, document.body.firstChild);
+                 
+                 // Agregar marca de agua en la factura
+                 const facturaContent = document.getElementById('factura-content');
+                 if (facturaContent) {
+                     facturaContent.style.position = 'relative';
+                     
+                     const marcaAgua = document.createElement('div');
+                     marcaAgua.className = 'absolute inset-0 flex items-center justify-center pointer-events-none';
+                     marcaAgua.style.zIndex = '1';
+                     marcaAgua.innerHTML = `
+                         <div class="transform rotate-45 text-6xl font-bold text-orange-200 opacity-30">
+                             DEMO
+                         </div>
+                     `;
+                     facturaContent.appendChild(marcaAgua);
+                 }
+                 
+                 // Ajustar padding del body para compensar el banner
+                 document.body.style.paddingTop = '50px';
+             }
+        }
+        
+        // Inicializar cuando el DOM esté listo
+        document.addEventListener('DOMContentLoaded', function() {
+            new FacturaViewer();
+        });
+    </script>
+</body>
+</html> 

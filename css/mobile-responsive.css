@@ -1,0 +1,308 @@
+/* Optimizaciones móviles específicas para El Poder de Soltar */
+
+/* Mejoras para touch en dispositivos móviles */
+@media (max-width: 768px) {
+    /* Asegurar que todos los elementos táctiles tengan al menos 44px */
+    button, 
+    input[type="button"], 
+    input[type="submit"], 
+    .btn,
+    a.btn,
+    label[for] {
+        min-height: 44px;
+        min-width: 44px;
+        touch-action: manipulation;
+    }
+    
+    /* Mejorar el área de toque para elementos pequeños */
+    .countdown-item {
+        padding: 12px 8px !important;
+    }
+    
+    /* Optimizar el selector de asientos para móviles */
+    .asiento-button {
+        min-width: 24px;
+        min-height: 24px;
+        font-size: 10px;
+    }
+    
+    /* Mejorar la legibilidad en móviles */
+    .hero-content h1 {
+        line-height: 1.1;
+        word-break: break-word;
+        font-weight: 900 !important;
+    }
+    
+    /* Optimizar el título principal para móviles */
+    .hero-title {
+        background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 25%, #ea580c  50%, #dc2626 75%, #b91c1c 100%) !important;
+        -webkit-background-clip: text !important;
+        -webkit-text-fill-color: transparent !important;
+        background-clip: text !important;
+        background-size: 300% 300% !important;
+        animation: gradient-mobile 2.5s ease-in-out infinite !important;
+        font-weight: 900 !important;
+        text-shadow: none !important;
+        filter: drop-shadow(1px 1px 3px rgba(251, 191, 36, 0.2)) !important;
+    }
+    
+    @keyframes gradient-mobile {
+        0%, 100% {
+            background-position: 0% 50%;
+        }
+        25% {
+            background-position: 50% 0%;
+        }
+        50% {
+            background-position: 100% 50%;
+        }
+        75% {
+            background-position: 50% 100%;
+        }
+    }
+    
+    /* Optimizar formularios para móviles */
+    .form-control {
+        font-size: 16px; /* Prevenir zoom en iOS */
+        padding: 12px 16px;
+    }
+    
+    /* Mejorar el espaciado en móviles */
+    .container {
+        padding-left: 16px;
+        padding-right: 16px;
+    }
+    
+    /* Optimizar el video para móviles */
+    video {
+        width: 100% !important;
+        height: auto !important;
+        max-height: 250px;
+        object-fit: cover;
+    }
+    
+    /* Mejorar la navegación móvil */
+    .mobile-menu {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.9);
+        z-index: 9999;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+    
+    /* Optimizar el mapa de asientos para móviles */
+    #mapa-asientos-numerados {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        padding-bottom: 10px;
+    }
+    
+    /* Mejorar la experiencia de scroll horizontal */
+    .overflow-x-auto::-webkit-scrollbar {
+        height: 6px;
+    }
+    
+    .overflow-x-auto::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 3px;
+    }
+    
+    .overflow-x-auto::-webkit-scrollbar-thumb {
+        background: #888;
+        border-radius: 3px;
+    }
+    
+    .overflow-x-auto::-webkit-scrollbar-thumb:hover {
+        background: #555;
+    }
+}
+
+/* Optimizaciones para tabletas */
+@media (min-width: 768px) and (max-width: 1024px) {
+    /* Ajustar el tamaño del video para tabletas */
+    video {
+        max-height: 350px;
+    }
+    
+    /* Optimizar el grid de asientos para tabletas */
+    .asiento-button {
+        min-width: 28px;
+        min-height: 28px;
+        font-size: 11px;
+    }
+    
+    /* Mejorar el espaciado en tabletas */
+    .countdown-container {
+        gap: 16px;
+    }
+    
+    /* Optimizar el título para tabletas */
+    .hero-title {
+        background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 25%, #ea580c  50%, #dc2626 75%, #b91c1c 100%) !important;
+        -webkit-background-clip: text !important;
+        -webkit-text-fill-color: transparent !important;
+        background-clip: text !important;
+        background-size: 250% 250% !important;
+        animation: gradient-tablet 3s ease-in-out infinite !important;
+        font-weight: 900 !important;
+        filter: drop-shadow(2px 2px 4px rgba(251, 191, 36, 0.25)) !important;
+    }
+    
+    @keyframes gradient-tablet {
+        0%, 100% {
+            background-position: 0% 50%;
+        }
+        50% {
+            background-position: 100% 50%;
+        }
+    }
+}
+
+/* Mejoras de accesibilidad */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* Optimizaciones para pantallas de alta densidad */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+    .hero-content h1 {
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
+}
+
+/* Mejoras para modo oscuro */
+@media (prefers-color-scheme: dark) {
+    .bg-white {
+        background-color: #1a1a1a !important;
+        color: #ffffff !important;
+    }
+    
+    .text-black {
+        color: #ffffff !important;
+    }
+    
+    .border-black {
+        border-color: #333333 !important;
+    }
+}
+
+/* Optimizaciones específicas para iOS */
+@supports (-webkit-touch-callout: none) {
+    /* Prevenir el zoom en inputs */
+    input[type="text"],
+    input[type="email"],
+    input[type="tel"],
+    select,
+    textarea {
+        font-size: 16px;
+    }
+    
+    /* Mejorar el comportamiento del video en iOS */
+    video {
+        -webkit-playsinline: true;
+        playsinline: true;
+    }
+}
+
+/* Optimizaciones para Android */
+@media screen and (-webkit-min-device-pixel-ratio: 0) {
+    /* Mejorar el rendimiento en Android */
+    .transform {
+        -webkit-transform: translateZ(0);
+        transform: translateZ(0);
+    }
+}
+
+/* Utilidades adicionales para responsividad */
+.touch-friendly {
+    min-height: 44px;
+    min-width: 44px;
+    touch-action: manipulation;
+}
+
+.mobile-hidden {
+    display: none;
+}
+
+@media (min-width: 640px) {
+    .mobile-hidden {
+        display: block;
+    }
+}
+
+.mobile-only {
+    display: block;
+}
+
+@media (min-width: 640px) {
+    .mobile-only {
+        display: none;
+    }
+}
+
+/* Mejoras para el sistema de asientos en móviles */
+.asientos-container-mobile {
+    max-width: 100vw;
+    overflow-x: auto;
+    padding: 0 16px;
+}
+
+.asientos-grid-mobile {
+    min-width: 320px;
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+}
+
+/* Optimizaciones para el countdown timer */
+.countdown-mobile {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+}
+
+@media (min-width: 640px) {
+    .countdown-mobile {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 16px;
+    }
+}
+
+/* Mejoras para los botones de pago */
+.payment-button-mobile {
+    width: 100%;
+    min-height: 52px;
+    font-size: 16px;
+    padding: 12px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+/* Optimizaciones para el promo banner */
+.promo-banner-mobile {
+    flex-direction: column;
+    gap: 16px;
+    padding: 16px;
+    text-align: center;
+}
+
+@media (min-width: 640px) {
+    .promo-banner-mobile {
+        flex-direction: row;
+        gap: 24px;
+        padding: 24px;
+    }
+} 

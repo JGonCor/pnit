@@ -1,0 +1,924 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="El poder de soltar - Evento presencial con Dr. Armando Solarte. Descubre el poder de la conexión interior y la liberación emocional.">
+    <title>Reserva de cupo | El poder de soltar | Dr. Armando Solarte</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/mobile-responsive.css">
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#000000', // Negro
+                        secondary: '#ff4500', // Color acento naranja
+                        light: '#ffffff', // Blanco
+                        'blue-primary': '#1e40af', // Azul principal
+                        'blue-secondary': '#3b82f6', // Azul secundario
+                        'blue-light': '#dbeafe', // Azul claro
+                    },
+                    fontFamily: {
+                        sans: ['Montserrat', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- ePayco Checkout script -->
+    <script type="text/javascript" src="https://checkout.epayco.co/checkout.js" defer id="epayco-script"></script>
+    <!-- ePayco Configuration script -->
+    <script src="js/epayco-config.js"></script>
+    <!-- ePayco Initialization script -->
+    <script src="js/epayco-init.js"></script>
+    <!-- Mode Indicator script -->
+    <script src="js/mode-indicator.js"></script>
+    <!-- Mode Switcher script -->
+    <script src="js/mode-switcher.js"></script>
+    <!-- Pricing script -->
+    <script src="js/pricing.js" defer></script>
+    <!-- Asientos Numerados script -->
+    <script src="js/asientos-numerados.js" defer></script>
+    <script>
+        // Verificar carga del script de ePayco
+        document.addEventListener('DOMContentLoaded', function() {
+            const epaycoScript = document.getElementById('epayco-script');
+            
+            // Verificar si el script ya está cargado
+            if (typeof ePayco !== 'undefined' && ePayco.checkout) {
+                console.log('ePayco ya está cargado correctamente');
+                return;
+            }
+            
+            // Error si el script no se carga después de cierto tiempo
+            const timeoutId = setTimeout(function() {
+                if (typeof ePayco === 'undefined' || !ePayco.checkout) {
+                    console.error('Error: ePayco no se cargó después de esperar 5 segundos');
+                }
+            }, 5000);
+            
+            // Si el script falla, recargar o proporcionar alternativa
+            epaycoScript.onerror = function() {
+                clearTimeout(timeoutId);
+                console.error('Error al cargar el script de ePayco');
+                
+                // Intentar cargar de nuevo
+                const newScript = document.createElement('script');
+                newScript.src = 'https://checkout.epayco.co/checkout.js';
+                newScript.type = 'text/javascript';
+                document.head.appendChild(newScript);
+            };
+        });
+    </script>
+</head>
+<body class="font-sans">
+    <!-- Header/Navigation -->
+    <header class="w-full bg-white z-50">
+        <div class="container mx-auto px-4 py-3">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center">
+                    <a href="index.html"><img src="img/Logo PNIT.png" alt="Logo PNIT" class="h-12 mr-3"></a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Banner Section -->
+    <section class="bg-black text-white py-20">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col md:flex-row items-center">
+                <div class="md:w-1/2 mb-8 md:mb-0">
+                    <h1 class="text-4xl md:text-5xl font-bold mb-4 uppercase">Reserva Tu Experiencia</h1>
+                    <p class="text-xl mb-4">Asegura tu lugar en este viaje transformador con el Dr. Armando Solarte</p>
+                    <div class="flex items-center">
+                        <div class="w-16 h-16 rounded-full bg-secondary flex items-center justify-center mr-4">
+                            <i class="fas fa-calendar-check text-white text-2xl"></i>
+                        </div>
+                        <p>5 de octubre, 2025</p>
+                    </div>
+                </div>
+                <div class="md:w-1/2">
+                    <div class="relative">
+                        <img src="img/hero-image.jpeg" alt="Evento El Poder de Soltar" class="rounded-lg shadow-xl w-full">
+                        <div class="absolute top-0 left-0 w-full h-full bg-black opacity-30 rounded-lg"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Formulario de Reserva -->
+    <section id="reserva" class="py-16">
+        <div class="container mx-auto px-4">
+            <div class="max-w-3xl mx-auto">
+                <div class="flex items-center justify-center mb-8">
+                    <div class="h-1 bg-secondary w-12 mr-2"></div>
+                    <h2 class="section-title mb-0 inline-block">RESERVA TU EXPERIENCIA</h2>
+                    <div class="h-1 bg-secondary w-12 ml-2"></div>
+                </div>
+                
+                <div class="bg-white p-8 border border-black shadow-xl">
+                    <form id="reservation-form" class="space-y-6">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label for="nombre" class="block text-black font-medium mb-2">Nombre completo *</label>
+                                <input type="text" id="nombre" name="nombre" class="form-control" required>
+                            </div>
+                            
+                            <div>
+                                <label for="email" class="block text-black font-medium mb-2">Correo electrónico *</label>
+                                <input type="email" id="email" name="email" class="form-control" required>
+                            </div>
+                            
+                            <div>
+                                <label for="telefono" class="block text-black font-medium mb-2">Teléfono *</label>
+                                <input type="tel" id="telefono" name="telefono" class="form-control" required>
+                            </div>
+                            
+                            <div>
+                                <label for="cantidad" class="block text-black font-medium mb-2">Cantidad de cupos *</label>
+                                <select id="cantidad" name="cantidad" class="form-control" required>
+                                    <option value="1">1 cupo</option>
+                                    <option value="2">2 cupos</option>
+                                    <option value="3">3 cupos</option>
+                                    <option value="4">4 cupos</option>
+                                    <option value="5">5 cupos</option>
+                                    <option value="6+">6+ cupos (especificar)</option>
+                                </select>
+                                <p class="text-sm text-gray-600 mt-2" id="precio-total"></p>
+                            </div>
+                        </div>
+                        
+                        <!-- Campo para especificar cantidad exacta (inicialmente oculto) -->
+                        <div id="cantidad-exacta-container" class="hidden mt-4 p-4 bg-gray-100">
+                            <label for="cantidad_exacta" class="block text-black font-medium mb-2">Indica la cantidad exacta de cupos que deseas *</label>
+                            <input type="number" id="cantidad_exacta" name="cantidad_exacta" min="6" value="6" class="form-control w-full" placeholder="Por ejemplo: 8">
+                            <p class="text-sm text-gray-600 mt-2">Ingresa un número mayor o igual a 6.</p>
+                        </div>
+                        
+                        <!-- Opciones de Accesibilidad -->
+                        <div class="border-t pt-6">
+                            <h3 class="text-lg font-semibold mb-4 text-gray-800">🦽 Accesibilidad</h3>
+                            
+                            <div>
+                                <label for="discapacidad" class="flex items-center">
+                                    <input type="checkbox" id="discapacidad" name="discapacidad" class="mr-2 h-5 w-5">
+                                    <span>Requiero acceso adaptado para personas con movilidad reducida</span>
+                                </label>
+                            </div>
+                            
+                            <!-- Campo para número de personas con movilidad reducida (inicialmente oculto) -->
+                            <div id="personas-movilidad-reducida" class="hidden mt-4 p-4 bg-gray-100 rounded-lg">
+                                <label for="num_movilidad_reducida" class="block text-black font-medium mb-2">¿Cuántas personas con necesidades de accesibilidad asistirán? *</label>
+                                
+                                <!-- Selector dinámico que se genera según la cantidad de cupos -->
+                                <div id="select-movilidad-container">
+                                    <select id="num_movilidad_reducida" name="num_movilidad_reducida" class="form-control w-full">
+                                        <!-- Las opciones se generan dinámicamente -->
+                                    </select>
+                                </div>
+                                
+                                <!-- Campo para acompañante -->
+                                <div class="mt-4">
+                                    <label for="requiere_acompanante" class="flex items-center">
+                                        <input type="checkbox" id="requiere_acompanante" name="requiere_acompanante" class="mr-2 h-5 w-5">
+                                        <span>Alguna persona con discapacidad requiere acompañante en la fila de accesibilidad</span>
+                                    </label>
+                                    <p class="text-xs text-gray-600 mt-1">Si se marca esta opción, se reservará 1 asiento adicional en la fila de accesibilidad para el acompañante.</p>
+                                </div>
+                                
+                                <div>
+                                    <p class="text-sm text-gray-600 mt-2">Esta información nos ayudará a preparar las condiciones adecuadas de accesibilidad para la experiencia transformadora.</p>
+                                    <p class="text-xs text-blue-600 mt-1" id="movilidad-info">Máximo: <span id="max-movilidad">1</span> persona(s) según los cupos seleccionados</p>
+                                    <div id="asientos-accesibilidad-info" class="mt-2 p-2 bg-blue-50 border border-blue-200 rounded text-xs text-blue-700 hidden">
+                                        <p><strong>Distribución de asientos:</strong></p>
+                                        <p>• Fila de accesibilidad: <span id="asientos-fila-accesibilidad">0</span> asiento(s)</p>
+                                        <p>• Otras filas: <span id="asientos-otras-filas">0</span> asiento(s)</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Selector de Asientos Numerados -->
+                        <div id="selector-asientos-container" class="hidden mt-4 sm:mt-6 p-3 sm:p-6 bg-gradient-to-br from-blue-50 to-purple-50 border-2 border-blue-200 rounded-lg">
+                            <div class="text-center mb-3 sm:mb-4">
+                                <h3 class="text-lg sm:text-xl font-bold text-blue-800 mb-2">🎫 Selecciona tus Asientos</h3>
+                                <p class="text-sm sm:text-base text-blue-600">Toca la ubicación específica para tu(s) cupo(s)</p>
+                                
+                                <!-- Nota de accesibilidad prominente -->
+                                <div class="mt-3 mb-3 p-2 bg-yellow-100 border border-yellow-300 rounded text-xs text-yellow-800">
+                                    <p><strong>📍 Importante:</strong> La primera fila está reservada exclusivamente para personas con movilidad reducida y sus acompañantes.</p>
+                                </div>
+                                
+                                <div class="mt-2">
+                                    <span class="inline-flex items-center px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm font-medium bg-blue-100 text-blue-800">
+                                        <span id="asientos-seleccionados-count">0</span> de <span id="asientos-requeridos-count">1</span> asientos seleccionados
+                                    </span>
+                                </div>
+                            </div>
+                            
+                            <!-- Contenedor del mapa de asientos -->
+                            <div id="mapa-asientos-numerados" class="w-full overflow-x-auto">
+                                <!-- El mapa se genera dinámicamente -->
+                            </div>
+                            
+                            <!-- Información adicional -->
+                            <div class="mt-3 sm:mt-4 text-center">
+                                <div class="grid grid-cols-2 sm:flex sm:flex-wrap justify-center gap-2 sm:gap-4 text-xs sm:text-sm">
+                                    <div class="flex items-center justify-center bg-white p-2 rounded">
+                                        <div class="w-3 h-3 sm:w-4 sm:h-4 rounded mr-1 sm:mr-2 bg-green-200 border border-green-400"></div>
+                                        <span>Disponible</span>
+                                    </div>
+                                    <div class="flex items-center justify-center bg-white p-2 rounded">
+                                        <div class="w-3 h-3 sm:w-4 sm:h-4 rounded mr-1 sm:mr-2 bg-blue-500"></div>
+                                        <span>Seleccionado</span>
+                                    </div>
+                                    <div class="flex items-center justify-center bg-white p-2 rounded">
+                                        <div class="w-3 h-3 sm:w-4 sm:h-4 rounded mr-1 sm:mr-2 bg-red-500"></div>
+                                        <span>Ocupado</span>
+                                    </div>
+                                    <div class="flex items-center justify-center bg-white p-2 rounded">
+                                        <div class="w-3 h-3 sm:w-4 sm:h-4 rounded mr-1 sm:mr-2 bg-yellow-500"></div>
+                                        <span>Reservado</span>
+                                    </div>
+                                </div>
+                                <div class="mt-2 sm:mt-3 text-xs text-gray-600 px-2">
+                                    <p><strong>💡 Tip:</strong> Los asientos se numeran con formato de ubicación (ej: R01-05 = Derecha-Fila1-Asiento5)</p>
+                                </div>
+                            </div>
+                            
+                            <!-- Lista de asientos seleccionados -->
+                            <div class="mt-3 sm:mt-4">
+                                <div id="lista-asientos-seleccionados" class="hidden">
+                                    <h4 class="font-semibold text-gray-800 mb-2 text-sm sm:text-base">✅ Asientos seleccionados:</h4>
+                                    <div id="asientos-seleccionados-lista" class="flex flex-wrap gap-1 sm:gap-2"></div>
+                                </div>
+                            </div>
+                                                </div>
+                        
+                        <!-- Sección de Cupón de Descuento -->
+                        <div class="border-t pt-6">
+                            <h3 class="text-lg font-semibold mb-4 text-gray-800">💰 Cupón de Descuento Pre-venta</h3>
+                            <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-4">
+                                <div class="flex items-center mb-2">
+                                    <i class="fas fa-tag text-yellow-600 mr-2"></i>
+                                    <span class="font-semibold text-yellow-800">¡Descuento especial disponible!</span>
+                                </div>
+                                <p class="text-sm text-yellow-700">
+                                    Durante el período de pre-venta, puedes obtener <strong>$56,000 COP de descuento</strong> 
+                                    utilizando el cupón especial.
+                                </p>
+                            </div>
+                            
+                            <div class="flex flex-col sm:flex-row gap-2 sm:gap-3">
+                                <div class="flex-1">
+                                    <label for="codigo-cupon" class="block text-gray-700 font-medium mb-2 text-sm sm:text-base">
+                                        Código de cupón (opcional)
+                                    </label>
+                                    <input 
+                                        type="text" 
+                                        id="codigo-cupon" 
+                                        name="codigo-cupon" 
+                                        placeholder="Ingresa tu código de cupón" 
+                                        class="form-control uppercase text-sm sm:text-base"
+                                        style="text-transform: uppercase;"
+                                    >
+                                </div>
+                                <div class="flex flex-col justify-end">
+                                    <button 
+                                        type="button" 
+                                        id="aplicar-cupon" 
+                                        class="bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-300 text-sm sm:text-base min-h-[44px]"
+                                    >
+                                        Aplicar
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <!-- Botón para remover cupón (inicialmente oculto) -->
+                            <div class="mt-2">
+                                <button 
+                                    type="button" 
+                                    id="remover-cupon" 
+                                    class="bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-300 text-sm"
+                                    style="display: none;"
+                                >
+                                    Remover cupón
+                                </button>
+                            </div>
+                            
+                            <!-- Mensaje de resultado del cupón -->
+                            <div id="mensaje-cupon" class="mt-2 text-sm font-medium"></div>
+                            
+                            <!-- Resumen de precios -->
+                            <div class="mt-4 p-4 bg-gray-50 rounded-lg">
+                                <div class="flex justify-between items-center mb-2">
+                                    <span class="font-medium">Precio por cupo:</span>
+                                    <span id="precio-display" class="font-bold text-lg">Cargando...</span>
+                                </div>
+                                <div class="flex justify-between items-center text-lg font-bold">
+                                    <span>Total a pagar:</span>
+                                    <span id="total-display" class="text-blue-600">Cargando...</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-black font-medium mb-2 text-sm sm:text-base">Tipo de pago *</label>
+                            <div class="flex flex-col sm:flex-row gap-2 sm:gap-4">
+                                <label class="flex items-center bg-blue-light p-3 rounded-lg border-2 border-blue-secondary hover:bg-blue-100 transition-colors cursor-pointer min-h-[48px]">
+                                    <input type="radio" name="tipo_pago" value="completo" class="mr-2 h-4 w-4 sm:h-5 sm:w-5 text-blue-primary" checked>
+                                    <span class="text-blue-primary font-semibold text-sm sm:text-base" id="btn-pago-completo">Pago completo</span>
+                                </label>
+                                <label class="flex items-center bg-orange-50 p-3 rounded-lg border-2 border-orange-300 hover:bg-orange-100 transition-colors cursor-pointer min-h-[48px]">
+                                    <input type="radio" name="tipo_pago" value="reserva" class="mr-2 h-4 w-4 sm:h-5 sm:w-5 text-orange-500">
+                                    <span class="text-orange-600 font-semibold text-sm sm:text-base" id="btn-reserva">Reserva (30%)</span>
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div class="pt-4">
+                            <button type="submit" id="submit-button" class="bg-gradient-to-r from-blue-primary to-blue-secondary hover:from-blue-600 hover:to-blue-700 text-white font-bold py-3 px-6 rounded-lg w-full text-base sm:text-lg transition-all duration-300 transform hover:scale-105 shadow-lg min-h-[52px] flex items-center justify-center">
+                                💳 PROCEDER AL PAGO
+                            </button>
+                        </div>
+                        
+                        <p class="text-xs sm:text-sm text-gray-600 text-center mt-4 px-2">
+                            Al hacer clic en "PROCEDER AL PAGO", serás redirigido a nuestra pasarela de pagos segura ePayco.
+                        </p>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Completar Pago Pendiente -->
+    <section id="completar-pago" class="py-16 bg-gray-100">
+        <div class="container mx-auto px-4">
+            <h2 class="section-title">¿YA RESERVASTE TU LUGAR?</h2>
+            <div class="flex flex-col md:flex-row items-center max-w-3xl mx-auto mt-8">
+                <div class="md:w-1/3 mb-8 md:mb-0">
+                    <div class="relative w-48 h-48 mx-auto">
+                        <div class="absolute inset-0 bg-secondary rounded-full opacity-20 animate-ping"></div>
+                        <div class="absolute inset-0 flex items-center justify-center bg-black rounded-full text-white">
+                            <i class="fas fa-search text-5xl"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="md:w-2/3 bg-white p-8 shadow-xl border border-black">
+                    <h3 class="text-2xl font-semibold text-center mb-6">Completa el pago de tu reserva</h3>
+                    <div class="pt-4">
+                        <a href="reserva.html" class="btn btn-primary w-full py-3 text-lg">BUSCAR MI RESERVA</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-black text-white py-12">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col md:flex-row justify-between">
+                <div class="mb-8 md:mb-0 md:w-1/2">
+                    <h3 class="text-2xl font-bold mb-4">El poder de soltar</h3>
+                    <p class="max-w-md">Una experiencia transformadora con el Dr. Armando Solarte para conectar con tu esencia interior, liberar lo que te limita y despertar a una nueva realidad.</p>
+                </div>
+                
+                <div class="md:w-1/2">
+                    <h4 class="text-lg font-semibold mb-4">Contacto</h4>
+                    <ul class="space-y-2">
+                        <li><i class="fas fa-envelope mr-2"></i> info@pnitecnicasolarte.com</li>
+                        <li><i class="fas fa-phone mr-2"></i> +57 316 777 7676</li>
+                        <li><i class="fas fa-map-marker-alt mr-2"></i> Calle 93b # 19 - 44, Casa Dann Carlton, Bogotá</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-800 mt-8 pt-8 text-center text-sm">
+                <p>&copy; 2025 El poder de soltar - Dr. Armando Solarte. Todos los derechos reservados.</p>
+                <p class="mt-2">PNIT - Psiconeuroinmunoterapia Transformadora</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="js/main.js"></script>
+    
+    <!-- Script de integración de asientos numerados y validaciones mejoradas -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🎫 Inicializando integración mejorada en pagos.html');
+            
+            // Referencias a elementos del formulario
+            const cantidadSelect = document.getElementById('cantidad');
+            const cantidadExactaInput = document.getElementById('cantidad_exacta');
+            const cantidadExactaContainer = document.getElementById('cantidad-exacta-container');
+            const selectorAsientosContainer = document.getElementById('selector-asientos-container');
+            const discapacidadCheckbox = document.getElementById('discapacidad');
+            const movilidadReducidaContainer = document.getElementById('personas-movilidad-reducida');
+            const movilidadReducidaSelect = document.getElementById('num_movilidad_reducida');
+            const maxMovilidadSpan = document.getElementById('max-movilidad');
+            const requiereAcompananteCheckbox = document.getElementById('requiere_acompanante');
+            const asientosAccesibilidadInfo = document.getElementById('asientos-accesibilidad-info');
+            const asientosFilaAccesibilidadSpan = document.getElementById('asientos-fila-accesibilidad');
+            const asientosOtrasFilasSpan = document.getElementById('asientos-otras-filas');
+            const submitButton = document.getElementById('submit-button');
+            const codigoCuponInput = document.getElementById('codigo-cupon');
+            const aplicarCuponBtn = document.getElementById('aplicar-cupon');
+            const removerCuponBtn = document.getElementById('remover-cupon');
+            const mensajeCuponDiv = document.getElementById('mensaje-cupon');
+            const precioDisplay = document.getElementById('precio-display');
+            const totalDisplay = document.getElementById('total-display');
+            
+            let asientosSeleccionados = [];
+            let sistemaAsientosInicializado = false;
+            let cuponAplicado = false;
+            let precioBase = 500000; // Precio base sin descuento
+            let descuentoCupon = 56000; // Descuento del cupón SOLTAR
+            
+            // Función para obtener la cantidad total de cupos
+            function obtenerCantidadTotal() {
+                if (cantidadSelect.value === '6+') {
+                    return parseInt(cantidadExactaInput.value) || 6;
+                }
+                return parseInt(cantidadSelect.value) || 1;
+            }
+            
+            // Función para calcular distribución de asientos según discapacidad
+            function calcularDistribucionAsientos() {
+                const cantidadTotal = obtenerCantidadTotal();
+                const numMovilidad = parseInt(movilidadReducidaSelect.value) || 0;
+                const requiereAcompanante = requiereAcompananteCheckbox.checked;
+                
+                let asientosFilaAccesibilidad = 0;
+                let asientosOtrasFilas = cantidadTotal;
+                
+                if (discapacidadCheckbox.checked && numMovilidad > 0) {
+                    asientosFilaAccesibilidad = numMovilidad;
+                    if (requiereAcompanante) {
+                        asientosFilaAccesibilidad += 1; // Máximo 1 acompañante
+                    }
+                    asientosOtrasFilas = cantidadTotal - asientosFilaAccesibilidad;
+                }
+                
+                return {
+                    total: cantidadTotal,
+                    filaAccesibilidad: asientosFilaAccesibilidad,
+                    otrasFilas: asientosOtrasFilas,
+                    personasDiscapacidad: numMovilidad,
+                    tieneAcompanante: requiereAcompanante
+                };
+            }
+            
+            // Función para actualizar la información de distribución de asientos
+            function actualizarInfoDistribucionAsientos() {
+                if (!discapacidadCheckbox.checked) {
+                    asientosAccesibilidadInfo.classList.add('hidden');
+                    return;
+                }
+                
+                const distribucion = calcularDistribucionAsientos();
+                
+                if (distribucion.filaAccesibilidad > 0) {
+                    asientosAccesibilidadInfo.classList.remove('hidden');
+                    asientosFilaAccesibilidadSpan.textContent = distribucion.filaAccesibilidad;
+                    asientosOtrasFilasSpan.textContent = distribucion.otrasFilas;
+                } else {
+                    asientosAccesibilidadInfo.classList.add('hidden');
+                }
+            }
+            
+            // Función para actualizar el selector de movilidad reducida
+            function actualizarSelectorMovilidadReducida(cantidadTotal) {
+                if (!movilidadReducidaSelect || !maxMovilidadSpan) return;
+                
+                // Limpiar opciones existentes
+                movilidadReducidaSelect.innerHTML = '';
+                
+                // Generar opciones según la cantidad total
+                for (let i = 1; i <= cantidadTotal; i++) {
+                    const option = document.createElement('option');
+                    option.value = i;
+                    option.textContent = `${i} persona${i > 1 ? 's' : ''}`;
+                    movilidadReducidaSelect.appendChild(option);
+                }
+                
+                // Actualizar el texto informativo
+                maxMovilidadSpan.textContent = cantidadTotal;
+                
+                console.log(`✅ Selector de movilidad reducida actualizado para máximo ${cantidadTotal} personas`);
+            }
+            
+            // Función para calcular y actualizar precios
+            function actualizarPrecios() {
+                const cantidad = obtenerCantidadTotal();
+                let precioUnitario = precioBase;
+                
+                if (cuponAplicado) {
+                    precioUnitario = precioBase - descuentoCupon;
+                }
+                
+                const total = precioUnitario * cantidad;
+                
+                // Actualizar displays
+                if (precioDisplay) {
+                    precioDisplay.textContent = formatearPrecio(precioUnitario);
+                }
+                
+                if (totalDisplay) {
+                    totalDisplay.textContent = formatearPrecio(total);
+                    
+                    // Cambiar color según si hay descuento
+                    if (cuponAplicado) {
+                        totalDisplay.className = 'text-green-600 font-bold';
+                    } else {
+                        totalDisplay.className = 'text-blue-600 font-bold';
+                    }
+                }
+                
+                console.log(`💰 Precios actualizados: ${cantidad} x ${formatearPrecio(precioUnitario)} = ${formatearPrecio(total)}`);
+            }
+            
+            // Función para formatear precios
+            function formatearPrecio(precio) {
+                return new Intl.NumberFormat('es-CO', {
+                    style: 'currency',
+                    currency: 'COP',
+                    minimumFractionDigits: 0
+                }).format(precio);
+            }
+            
+            // Función para aplicar cupón
+            function aplicarCupon() {
+                const codigoCupon = codigoCuponInput.value.trim().toUpperCase();
+                
+                if (codigoCupon === 'SOLTAR') {
+                    cuponAplicado = true;
+                    
+                    // Mostrar mensaje de éxito
+                    mensajeCuponDiv.innerHTML = `
+                        <div class="text-green-600">
+                            <i class="fas fa-check-circle mr-1"></i>
+                            ¡Cupón aplicado! Descuento de ${formatearPrecio(descuentoCupon)} aplicado
+                        </div>
+                    `;
+                    
+                    // Mostrar botón de remover y ocultar aplicar
+                    aplicarCuponBtn.style.display = 'none';
+                    removerCuponBtn.style.display = 'inline-block';
+                    codigoCuponInput.disabled = true;
+                    
+                    actualizarPrecios();
+                    mostrarNotificacion('¡Cupón de descuento aplicado exitosamente!', 'success');
+                    
+                } else if (codigoCupon === '') {
+                    mostrarNotificacion('Por favor ingresa un código de cupón', 'warning');
+                } else {
+                    mensajeCuponDiv.innerHTML = `
+                        <div class="text-red-600">
+                            <i class="fas fa-times-circle mr-1"></i>
+                            Código de cupón inválido
+                        </div>
+                    `;
+                    mostrarNotificacion('Código de cupón no válido', 'error');
+                }
+            }
+            
+            // Función para remover cupón
+            function removerCupon() {
+                cuponAplicado = false;
+                codigoCuponInput.value = '';
+                codigoCuponInput.disabled = false;
+                mensajeCuponDiv.innerHTML = '';
+                
+                // Mostrar botón de aplicar y ocultar remover
+                aplicarCuponBtn.style.display = 'inline-block';
+                removerCuponBtn.style.display = 'none';
+                
+                actualizarPrecios();
+                mostrarNotificacion('Cupón removido', 'info');
+            }
+            
+            // Función para mostrar/ocultar el selector de asientos
+            function toggleSelectorAsientos(cantidad) {
+                if (cantidad > 0) {
+                    selectorAsientosContainer.classList.remove('hidden');
+                    
+                    // Inicializar o actualizar el sistema de asientos
+                    if (window.SistemaAsientos) {
+                        const tieneMovilidadReducida = discapacidadCheckbox.checked;
+                        const distribucion = calcularDistribucionAsientos();
+                        
+                        window.SistemaAsientos.inicializar('mapa-asientos-numerados', cantidad, tieneMovilidadReducida, distribucion);
+                        sistemaAsientosInicializado = true;
+                        
+                        console.log(`✅ Sistema de asientos inicializado para ${cantidad} cupos con distribución:`, distribucion);
+                    } else {
+                        console.error('❌ Sistema de asientos no disponible');
+                    }
+                } else {
+                    selectorAsientosContainer.classList.add('hidden');
+                    sistemaAsientosInicializado = false;
+                }
+                
+                // Actualizar estado del botón de envío
+                actualizarEstadoBotonEnvio();
+            }
+            
+            // Función para actualizar el estado del botón de envío
+            function actualizarEstadoBotonEnvio() {
+                if (!sistemaAsientosInicializado) {
+                    submitButton.disabled = false;
+                    submitButton.textContent = '💳 PROCEDER AL PAGO';
+                    submitButton.className = submitButton.className.replace('bg-gray-400', 'bg-gradient-to-r from-blue-primary to-blue-secondary');
+                    return;
+                }
+                
+                const cantidadRequerida = obtenerCantidadTotal();
+                const cantidadSeleccionada = asientosSeleccionados.length;
+                
+                if (cantidadSeleccionada === cantidadRequerida) {
+                    submitButton.disabled = false;
+                    submitButton.textContent = `💳 PROCEDER AL PAGO (${cantidadSeleccionada} asientos)`;
+                    submitButton.className = submitButton.className.replace('bg-gray-400', 'bg-gradient-to-r from-blue-primary to-blue-secondary');
+                } else {
+                    submitButton.disabled = true;
+                    submitButton.textContent = `⏳ Selecciona ${cantidadRequerida - cantidadSeleccionada} asiento(s) más`;
+                    submitButton.className = submitButton.className.replace('bg-gradient-to-r from-blue-primary to-blue-secondary', 'bg-gray-400');
+                }
+            }
+            
+            // Event listener para cambios en cantidad
+            cantidadSelect.addEventListener('change', function() {
+                const cantidad = obtenerCantidadTotal();
+                
+                // Mostrar/ocultar campo de cantidad exacta
+                if (this.value === '6+') {
+                    cantidadExactaContainer.classList.remove('hidden');
+                } else {
+                    cantidadExactaContainer.classList.add('hidden');
+                }
+                
+                // Actualizar selector de movilidad reducida
+                actualizarSelectorMovilidadReducida(cantidad);
+                
+                // Actualizar información de distribución
+                actualizarInfoDistribucionAsientos();
+                
+                // Actualizar precios
+                actualizarPrecios();
+                
+                // Actualizar selector de asientos
+                toggleSelectorAsientos(cantidad);
+            });
+            
+            // Event listener para cantidad exacta
+            cantidadExactaInput.addEventListener('input', function() {
+                if (cantidadSelect.value === '6+') {
+                    const cantidad = obtenerCantidadTotal();
+                    actualizarSelectorMovilidadReducida(cantidad);
+                    actualizarInfoDistribucionAsientos();
+                    actualizarPrecios();
+                    toggleSelectorAsientos(cantidad);
+                }
+            });
+            
+            // Event listener para checkbox de discapacidad
+            discapacidadCheckbox.addEventListener('change', function() {
+                if (this.checked) {
+                    movilidadReducidaContainer.classList.remove('hidden');
+                    actualizarSelectorMovilidadReducida(obtenerCantidadTotal());
+                    actualizarInfoDistribucionAsientos();
+                } else {
+                    movilidadReducidaContainer.classList.add('hidden');
+                    asientosAccesibilidadInfo.classList.add('hidden');
+                    // Limpiar asientos seleccionados cuando se desactiva discapacidad
+                    if (window.SistemaAsientos && sistemaAsientosInicializado) {
+                        window.SistemaAsientos.limpiarSeleccion();
+                        asientosSeleccionados = [];
+                        actualizarEstadoBotonEnvio();
+                    }
+                }
+                
+                if (sistemaAsientosInicializado) {
+                    const cantidad = obtenerCantidadTotal();
+                    toggleSelectorAsientos(cantidad);
+                }
+            });
+            
+            // Event listener para cambios en selector de movilidad reducida
+            movilidadReducidaSelect.addEventListener('change', function() {
+                if (discapacidadCheckbox.checked) {
+                    const numMovilidad = parseInt(this.value) || 0;
+                    const cantidadTotal = obtenerCantidadTotal();
+                    
+                    if (numMovilidad > cantidadTotal) {
+                        mostrarNotificacion(`No puedes seleccionar más personas con discapacidad (${numMovilidad}) que el total de cupos (${cantidadTotal}).`, 'warning');
+                        this.value = Math.min(numMovilidad, cantidadTotal);
+                        return;
+                    }
+                    
+                    actualizarInfoDistribucionAsientos();
+                    
+                    // Si hay asientos seleccionados, verificar nueva distribución
+                    if (window.SistemaAsientos && asientosSeleccionados.length > 0 && sistemaAsientosInicializado) {
+                        const distribucion = calcularDistribucionAsientos();
+                        const asientosDetalle = window.SistemaAsientos.obtenerAsientosSeleccionados();
+                        const asientosFilaAccesibilidad = asientosDetalle.filter(asiento => asiento.fila === 1);
+                        const asientosOtrasFilas = asientosDetalle.filter(asiento => asiento.fila !== 1);
+                        
+                        if (asientosFilaAccesibilidad.length !== distribucion.filaAccesibilidad || 
+                            asientosOtrasFilas.length !== distribucion.otrasFilas) {
+                            mostrarNotificacion(`La distribución de asientos ha cambiado. Se requieren ${distribucion.filaAccesibilidad} asiento(s) en fila de accesibilidad y ${distribucion.otrasFilas} en otras filas. Por favor reselecciona tus asientos.`, 'warning');
+                            
+                            // Actualizar distribución en el sistema de asientos
+                            window.SistemaAsientos.establecerDistribucion(distribucion);
+                            
+                            // Limpiar selección para que el usuario reseleccione
+                            window.SistemaAsientos.limpiarSeleccion();
+                            asientosSeleccionados = [];
+                            actualizarEstadoBotonEnvio();
+                        }
+                    }
+                }
+            });
+            
+            // Event listener para checkbox de acompañante
+            requiereAcompananteCheckbox.addEventListener('change', function() {
+                if (discapacidadCheckbox.checked) {
+                    actualizarInfoDistribucionAsientos();
+                    
+                    // Si hay asientos seleccionados, verificar nueva distribución
+                    if (window.SistemaAsientos && asientosSeleccionados.length > 0 && sistemaAsientosInicializado) {
+                        const distribucion = calcularDistribucionAsientos();
+                        const asientosDetalle = window.SistemaAsientos.obtenerAsientosSeleccionados();
+                        const asientosFilaAccesibilidad = asientosDetalle.filter(asiento => asiento.fila === 1);
+                        const asientosOtrasFilas = asientosDetalle.filter(asiento => asiento.fila !== 1);
+                        
+                        if (asientosFilaAccesibilidad.length !== distribucion.filaAccesibilidad || 
+                            asientosOtrasFilas.length !== distribucion.otrasFilas) {
+                            mostrarNotificacion(`La distribución de asientos ha cambiado. Se requieren ${distribucion.filaAccesibilidad} asiento(s) en fila de accesibilidad y ${distribucion.otrasFilas} en otras filas. Por favor reselecciona tus asientos.`, 'warning');
+                            
+                            // Actualizar distribución en el sistema de asientos
+                            window.SistemaAsientos.establecerDistribucion(distribucion);
+                            
+                            // Limpiar selección para que el usuario reseleccione
+                            window.SistemaAsientos.limpiarSeleccion();
+                            asientosSeleccionados = [];
+                            actualizarEstadoBotonEnvio();
+                        }
+                    }
+                }
+            });
+            
+            // Event listeners para cupones
+            aplicarCuponBtn.addEventListener('click', aplicarCupon);
+            removerCuponBtn.addEventListener('click', removerCupon);
+            
+            // Permitir aplicar cupón con Enter
+            codigoCuponInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    aplicarCupon();
+                }
+            });
+            
+            // Event listener para cambios en asientos seleccionados
+            window.addEventListener('asientosSeleccionados', function(event) {
+                asientosSeleccionados = event.detail.asientos;
+                console.log('🎫 Asientos actualizados:', event.detail);
+                actualizarEstadoBotonEnvio();
+            });
+            
+            // Modificar el envío del formulario para incluir asientos y validaciones mejoradas
+            const form = document.getElementById('reservation-form');
+            if (form) {
+                form.addEventListener('submit', function(event) {
+                    console.log('📝 Validando formulario antes del envío...');
+                    
+                    // Validar checkbox de discapacidad vs personas con movilidad reducida
+                    if (discapacidadCheckbox.checked) {
+                        const numMovilidad = parseInt(movilidadReducidaSelect.value) || 0;
+                        const cantidadTotal = obtenerCantidadTotal();
+                        
+                        if (numMovilidad > cantidadTotal) {
+                            event.preventDefault();
+                            mostrarNotificacion(`No puedes tener más personas con movilidad reducida (${numMovilidad}) que el total de cupos seleccionados (${cantidadTotal}).`, 'error');
+                            return;
+                        }
+                        
+                        if (numMovilidad < 1) {
+                            event.preventDefault();
+                            mostrarNotificacion('Debes especificar al menos 1 persona con necesidades de accesibilidad si marcaste esta opción.', 'warning');
+                            return;
+                        }
+                    }
+                    
+                    // Si el sistema de asientos está activo, validar selección
+                    if (sistemaAsientosInicializado) {
+                        const cantidadRequerida = obtenerCantidadTotal();
+                        
+                        if (asientosSeleccionados.length !== cantidadRequerida) {
+                            event.preventDefault();
+                            mostrarNotificacion(`Por favor selecciona exactamente ${cantidadRequerida} asiento(s) antes de continuar.`, 'warning');
+                            return;
+                        }
+                        
+                                            // Validar distribución de asientos según discapacidad
+                    if (discapacidadCheckbox.checked && window.SistemaAsientos) {
+                        const distribucion = calcularDistribucionAsientos();
+                        const asientosDetalle = window.SistemaAsientos.obtenerAsientosSeleccionados();
+                        const asientosFilaAccesibilidad = asientosDetalle.filter(asiento => asiento.fila === 1);
+                        const asientosOtrasFilas = asientosDetalle.filter(asiento => asiento.fila !== 1);
+                        
+                        // Validar que la distribución sea correcta
+                        if (asientosFilaAccesibilidad.length !== distribucion.filaAccesibilidad) {
+                            event.preventDefault();
+                            mostrarNotificacion(`Error en distribución: Se requieren exactamente ${distribucion.filaAccesibilidad} asiento(s) en la fila de accesibilidad, pero has seleccionado ${asientosFilaAccesibilidad.length}.`, 'error');
+                            return;
+                        }
+                        
+                        if (asientosOtrasFilas.length !== distribucion.otrasFilas) {
+                            event.preventDefault();
+                            mostrarNotificacion(`Error en distribución: Se requieren exactamente ${distribucion.otrasFilas} asiento(s) en otras filas, pero has seleccionado ${asientosOtrasFilas.length}.`, 'error');
+                            return;
+                        }
+                        
+                        // Validar que no se excedan los asientos de accesibilidad
+                        if (asientosFilaAccesibilidad.length > distribucion.personasDiscapacidad + (distribucion.tieneAcompanante ? 1 : 0)) {
+                            event.preventDefault();
+                            mostrarNotificacion(`Has seleccionado demasiados asientos en la fila de accesibilidad. Máximo permitido: ${distribucion.personasDiscapacidad} persona(s) con discapacidad${distribucion.tieneAcompanante ? ' + 1 acompañante' : ''}.`, 'error');
+                            return;
+                        }
+                    }
+                        
+                        // Agregar asientos seleccionados a los datos del formulario
+                        if (window.SistemaAsientos) {
+                            const asientosDetalle = window.SistemaAsientos.obtenerAsientosSeleccionados();
+                            
+                            // Crear campo oculto con información de asientos
+                            const asientosInput = document.createElement('input');
+                            asientosInput.type = 'hidden';
+                            asientosInput.name = 'asientos_seleccionados';
+                            asientosInput.value = JSON.stringify(asientosDetalle);
+                            form.appendChild(asientosInput);
+                            
+                            console.log('✅ Asientos incluidos en formulario:', asientosDetalle);
+                        }
+                    }
+                    
+                    // Agregar información del cupón
+                    if (cuponAplicado) {
+                        const cuponInput = document.createElement('input');
+                        cuponInput.type = 'hidden';
+                        cuponInput.name = 'cupon_aplicado';
+                        cuponInput.value = 'SOLTAR';
+                        form.appendChild(cuponInput);
+                    }
+                    
+                    console.log('✅ Formulario validado correctamente');
+                });
+            }
+            
+            // Inicialización
+            const cantidadInicial = obtenerCantidadTotal();
+            actualizarSelectorMovilidadReducida(cantidadInicial);
+            actualizarInfoDistribucionAsientos();
+            actualizarPrecios();
+            toggleSelectorAsientos(cantidadInicial);
+            
+            console.log('✅ Integración mejorada completada');
+        });
+        
+        // Función auxiliar para mostrar notificaciones
+        function mostrarNotificacion(mensaje, tipo = 'info') {
+            const notification = document.createElement('div');
+            notification.className = `fixed top-4 right-4 px-4 py-2 rounded-lg shadow-lg z-50 transition-all duration-300 ${
+                tipo === 'success' ? 'bg-green-500 text-white' :
+                tipo === 'error' ? 'bg-red-500 text-white' :
+                tipo === 'warning' ? 'bg-yellow-500 text-black' :
+                'bg-blue-500 text-white'
+            }`;
+            notification.textContent = mensaje;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.opacity = '0';
+                setTimeout(() => {
+                    if (document.body.contains(notification)) {
+                        document.body.removeChild(notification);
+                    }
+                }, 300);
+            }, 3000);
+        }
+    </script>
+</body>
+</html>

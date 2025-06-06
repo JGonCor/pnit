@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Confirmación de pago - El poder de soltar con Dr. Armando Solarte">
+    <title>Confirmación de Pago | El poder de soltar</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#1e40af', // Azul principal
+                        secondary: '#f7b633', // Amarillo PNIT
+                        light: '#f7fafc', // Blanco/gris muy claro
+                        'blue-primary': '#1e40af', // Azul principal
+                        'blue-secondary': '#3b82f6', // Azul secundario
+                        'blue-light': '#dbeafe', // Azul claro
+                    },
+                    fontFamily: {
+                        sans: ['Montserrat', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="font-sans bg-light">
+    <!-- Header/Navigation -->
+    <header class="w-full bg-white shadow-md">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center">
+                <img src="img/Logo PNIT.png" alt="Logo PNIT" class="h-12 mr-3">
+            </div>
+        </div>
+    </header>
+
+    <!-- Confirmation Section -->
+    <section class="py-16">
+        <div class="container mx-auto px-4">
+            <div class="max-w-3xl mx-auto bg-white rounded-lg shadow-lg p-8">
+                <div id="loading" class="text-center">
+                    <div class="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-primary mx-auto mb-4"></div>
+                    <h2 class="text-2xl font-bold text-gray-800 mb-2">Procesando confirmación de pago...</h2>
+                    <p class="text-gray-600">Por favor espera mientras verificamos tu transacción.</p>
+                </div>
+                
+                <div id="success" class="text-center hidden">
+                    <div class="bg-green-100 text-green-700 rounded-full h-20 w-20 flex items-center justify-center mx-auto mb-6">
+                        <i class="fas fa-check-circle text-5xl"></i>
+                    </div>
+                    <h2 class="text-2xl font-bold text-gray-800 mb-2">¡Pago confirmado!</h2>
+                    <p class="text-gray-600 mb-6">Gracias por reservar tu cupo para el evento "El poder de soltar".</p>
+                    <div class="bg-blue-50 p-4 rounded-lg mb-6">
+                        <h3 class="font-semibold mb-2">Detalles de tu reserva:</h3>
+                        <div id="payment-details" class="text-left">
+                            <!-- Los detalles se llenarán con JavaScript -->
+                        </div>
+                    </div>
+                    <a href="index.html" class="btn-primary">Volver a la página principal</a>
+                </div>
+                
+                <div id="error" class="text-center hidden">
+                    <div class="bg-red-100 text-red-700 rounded-full h-20 w-20 flex items-center justify-center mx-auto mb-6">
+                        <i class="fas fa-times-circle text-5xl"></i>
+                    </div>
+                    <h2 class="text-2xl font-bold text-gray-800 mb-2">Pago no completado</h2>
+                    <p class="text-gray-600 mb-6">Ha ocurrido un problema con tu pago. Por favor, intenta nuevamente.</p>
+                    <div class="bg-red-50 p-4 rounded-lg mb-6 text-left">
+                        <h3 class="font-semibold mb-2">Posible razón:</h3>
+                        <p id="error-reason">Error desconocido.</p>
+                    </div>
+                    <a href="pagos.html" class="btn-primary">Intentar nuevamente</a>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-8">
+        <div class="container mx-auto px-4">
+            <div class="text-center">
+                <h3 class="text-xl font-bold mb-2">El poder de soltar</h3>
+                <p class="mb-4">Un evento transformador con el Dr. Armando Solarte</p>
+                <p class="text-sm">&copy; 2025 El poder de soltar. Todos los derechos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="js/pricing.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Procesamiento de respuesta de ePayco
+            const urlParams = new URLSearchParams(window.location.search);
+            
+            // Simulamos un tiempo de procesamiento
+            setTimeout(async function() {
+                // Configuración de ePayco
+                const ePaycoConfig = {
+                    p_cust_id_cliente: '683101',
+                    p_key: 'dd00c57ef9859c64e04d4722f2ab8a5b85a1940a',
+                    public_key: '070f8aab3261bf1a71bbfd82dd97c9e2',
+                    private_key: '3a8d9241bc18d41c9e80a9232b44f8c9'
+                };
+                
+                // Obtener la referencia y estado de la transacción
+                const referencia = urlParams.get('ref_payco') || urlParams.get('x_ref_payco');
+                const estado = urlParams.get('x_response') || urlParams.get('x_respuesta') || '';
+                const codEstado = urlParams.get('x_cod_response') || urlParams.get('x_cod_respuesta') || '';
+                
+                console.log('Estado de la transacción:', estado);
+                console.log('Código de estado:', codEstado);
+                
+                // Verificar la firma digital usando la clave privada
+                const calculatedSignature = await calculateSignature(urlParams, ePaycoConfig.private_key);
+                const receivedSignature = urlParams.get('x_signature');
+                const isValidSignature = (calculatedSignature === receivedSignature);
+                
+                console.log('Firma calculada:', calculatedSignature);
+                console.log('Firma recibida:', receivedSignature);
+                console.log('¿Firma válida?:', isValidSignature);
+                
+                // Almacenar la transacción en localStorage
+                const transactionData = {
+                    referencia: referencia || 'INV-' + Date.now(),
+                    estado: estado,
+                    codEstado: codEstado,
+                    fecha: new Date().toISOString(),
+                    datos: Object.fromEntries(urlParams.entries()),
+                    verificado: isValidSignature
+                };
+                
+                saveTransaction(transactionData);
+                
+                // Verificar el resultado de la transacción
+                const acceptTransaction = isValidSignature;
+                
+                if (acceptTransaction) {
+                    // Códigos según documentación ePayco:
+                    // 1 = Aceptada
+                    // 2 = Rechazada
+                    // 3 = Pendiente
+                    // 4 = Fallida
+                    // 6 = Reversada
+                    // 7 = Retenida
+                    // 8 = Iniciada
+                    // 9 = Caducada
+                    // 10 = Abandonada
+                    // 11 = Cancelada
+                    if (codEstado === '1' || estado.toUpperCase() === 'ACEPTADA') {
+                        showPaymentSuccess({
+                            referencia: referencia || 'INV-' + Date.now(),
+                            nombre: urlParams.get('x_extra1') || 'Cliente',
+                            email: urlParams.get('x_extra2') || 'cliente@example.com',
+                            cantidad: urlParams.get('x_extra4') || '1',
+                            valor: urlParams.get('x_amount') || '400000',
+                            fecha: new Date().toLocaleDateString(),
+                            esCompletar: urlParams.get('x_extra5') === 'Completar_Pago'
+                        });
+                        
+                        // Si es completar pago, actualizar el registro
+                        if(urlParams.get('x_extra5') === 'Completar_Pago') {
+                            updateReservationStatus(urlParams.get('x_extra2'), referencia);
+                        }
+                    } else {
+                        let reason = '';
+                        
+                        if (codEstado === '2' || estado.toUpperCase() === 'RECHAZADA') {
+                            reason = 'La transacción fue rechazada por la entidad financiera.';
+                        } else if (codEstado === '3' || estado.toUpperCase() === 'PENDIENTE') {
+                            reason = 'La transacción está pendiente de aprobación.';
+                        } else if (codEstado === '4' || estado.toUpperCase() === 'FALLIDA') {
+                            reason = 'La transacción falló durante el proceso.';
+                        } else if (codEstado === '6' || estado.toUpperCase() === 'REVERSADA') {
+                            reason = 'La transacción fue reversada.';
+                        } else if (codEstado === '9' || estado.toUpperCase() === 'CADUCADA') {
+                            reason = 'La transacción ha caducado.';
+                        } else if (codEstado === '10' || estado.toUpperCase() === 'ABANDONADA') {
+                            reason = 'La transacción fue abandonada por el usuario.';
+                        } else if (codEstado === '11' || estado.toUpperCase() === 'CANCELADA') {
+                            reason = 'La transacción fue cancelada por el usuario.';
+                        } else {
+                            reason = urlParams.get('x_response_reason_text') || 'Estado de transacción desconocido.';
+                        }
+                        
+                        showPaymentError(reason);
+                    }
+                } else {
+                    showPaymentError('Firma digital inválida. Por seguridad, esta transacción no puede ser procesada.');
+                }
+                
+            }, 2000); // Simulamos 2 segundos de procesamiento
+        });
+        
+        function showPaymentSuccess(details) {
+            document.getElementById('loading').classList.add('hidden');
+            document.getElementById('success').classList.remove('hidden');
+            
+            // Definir el título según si es completar pago o reserva/pago completo
+            const title = details.esCompletar 
+                ? '¡Pago completado exitosamente!' 
+                : '¡Pago confirmado!';
+                
+            // Definir mensaje según si es completar pago o reserva/pago completo
+            const message = details.esCompletar
+                ? 'Has completado el pago de tu reserva para el evento "El poder de soltar". ¡Tu cupo está totalmente asegurado!'
+                : 'Gracias por reservar tu cupo para el evento "El poder de soltar".';
+            
+            // Actualizar el título y mensaje
+            document.querySelector('#success h2').textContent = title;
+            document.querySelector('#success p').textContent = message;
+            
+            const detailsContainer = document.getElementById('payment-details');
+            detailsContainer.innerHTML = `
+                <p><strong>Referencia:</strong> ${details.referencia}</p>
+                <p><strong>Nombre:</strong> ${details.nombre}</p>
+                <p><strong>Email:</strong> ${details.email}</p>
+                <p><strong>Cantidad de entradas:</strong> ${details.cantidad}</p>
+                <p><strong>Valor:</strong> $${formatNumber(details.valor)}</p>
+                <p><strong>Fecha:</strong> ${details.fecha}</p>
+                <p><strong>Tipo de pago:</strong> ${details.esCompletar ? 'Completar reserva (70%)' : 'Nuevo pago'}</p>
+            `;
+        }
+        
+        function showPaymentError(reason) {
+            document.getElementById('loading').classList.add('hidden');
+            document.getElementById('error').classList.remove('hidden');
+            document.getElementById('error-reason').textContent = reason || 'Error desconocido';
+        }
+        
+        function saveTransaction(transaction) {
+            // Guardar la transacción en localStorage
+            const transactions = JSON.parse(localStorage.getItem('transactions') || '[]');
+            transactions.push(transaction);
+            localStorage.setItem('transactions', JSON.stringify(transactions));
+        }
+        
+        function formatNumber(num) {
+            return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+        }
+        
+        /**
+         * Update reservation status when payment is completed
+         * @param {string} email - The email of the user
+         * @param {string} referencia - Payment reference
+         */
+        function updateReservationStatus(email, referencia) {
+            if (!email) return;
+            
+            // Get existing registrations
+            const registrations = JSON.parse(localStorage.getItem('eventRegistrations')) || [];
+            
+            // Find the reservation by email (most recent first that is a reservation)
+            const reservationIndex = registrations.findIndex(reg => 
+                reg.email.toLowerCase() === email.toLowerCase() && 
+                reg.tipo_pago === 'reserva'
+            );
+            
+            if (reservationIndex !== -1) {
+                // Update the registration status
+                registrations[reservationIndex].tipo_pago = 'completo';
+                registrations[reservationIndex].estatus = 'Pago completo';
+                registrations[reservationIndex].completado = new Date().toISOString();
+                registrations[reservationIndex].referenciaCompletar = referencia;
+                
+                // Save updated registrations
+                localStorage.setItem('eventRegistrations', JSON.stringify(registrations));
+                console.log('Reserva actualizada a pago completo:', registrations[reservationIndex]);
+            }
+        }
+        
+        // Función para calcular firma digital
+        async function calculateSignature(params, privateKey) {
+            // Crear la cadena para la firma según la documentación de ePayco
+            const cust_id = params.get('x_cust_id_cliente') || '';
+            const p_key = 'dd00c57ef9859c64e04d4722f2ab8a5b85a1940a'; // Clave secreta del comercio
+            const ref_payco = params.get('x_ref_payco') || '';
+            const transaction_id = params.get('x_transaction_id') || '';
+            const amount = params.get('x_amount') || '';
+            const currency = params.get('x_currency_code') || '';
+            
+            // Concatenar los valores en el orden requerido por ePayco
+            // hash('sha256',$p_cust_id_cliente.'^'.$p_key.'^'.$x_ref_payco.'^'.$x_transaction_id.'^'.$x_amount.'^'.$x_currency_code)
+            const signature_string = `${cust_id}^${p_key}^${ref_payco}^${transaction_id}^${amount}^${currency}`;
+            
+            // Calcular el hash SHA-256 de la cadena
+            return await sha256(signature_string);
+        }
+        
+        // Implementación de SHA-256 usando Web Crypto API
+        async function sha256(str) {
+            // Convertir string a buffer de bytes
+            const encoder = new TextEncoder();
+            const data = encoder.encode(str);
+            
+            // Calcular hash usando Web Crypto API
+            const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+            
+            // Convertir buffer a string hexadecimal
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,311 @@
+/* Estilos específicos para la gestión de asientos - Admin */
+
+/* Mapa de asientos responsivo */
+#seats-map {
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+}
+
+/* Asientos en el mapa */
+.seat-element {
+    transition: all 0.2s ease-in-out;
+    font-size: 10px;
+    font-weight: 600;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.seat-element:hover {
+    transform: scale(1.1);
+    z-index: 10;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Estados de asientos */
+.seat-available {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    border: 2px solid #047857;
+}
+
+.seat-reserved {
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    border: 2px solid #b45309;
+}
+
+.seat-occupied {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    border: 2px solid #b91c1c;
+}
+
+.seat-selected {
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    border: 2px solid #1d4ed8;
+    animation: pulse-selected 1.5s infinite;
+}
+
+@keyframes pulse-selected {
+    0%, 100% {
+        box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.7);
+    }
+    50% {
+        box-shadow: 0 0 0 8px rgba(59, 130, 246, 0);
+    }
+}
+
+/* Filas del teatro */
+.theater-row {
+    margin-bottom: 8px;
+}
+
+.row-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: #6b7280;
+    min-width: 30px;
+    text-align: center;
+}
+
+/* Secciones */
+.seat-section {
+    display: flex;
+    gap: 4px;
+}
+
+/* Estadísticas mejoradas */
+.stats-card {
+    transition: transform 0.2s ease-in-out;
+}
+
+.stats-card:hover {
+    transform: translateY(-2px);
+}
+
+/* Tabla de asientos responsiva */
+.seats-table-container {
+    max-height: 600px;
+    overflow-y: auto;
+}
+
+.seats-table-container::-webkit-scrollbar {
+    width: 8px;
+}
+
+.seats-table-container::-webkit-scrollbar-track {
+    background: #f1f5f9;
+}
+
+.seats-table-container::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 4px;
+}
+
+.seats-table-container::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+}
+
+/* Checkboxes personalizados */
+.seat-checkbox {
+    width: 16px;
+    height: 16px;
+    accent-color: #7c3aed;
+}
+
+/* Badges de estado */
+.status-badge {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Filtros */
+.filters-container {
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+    border: 1px solid #e2e8f0;
+}
+
+.filter-input:focus {
+    border-color: #7c3aed;
+    box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
+}
+
+/* Botones mejorados */
+.btn-primary {
+    background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
+    border: none;
+    transition: all 0.2s ease-in-out;
+}
+
+.btn-primary:hover {
+    background: linear-gradient(135deg, #6d28d9 0%, #5b21b6 100%);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);
+}
+
+.btn-success {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    border: none;
+    transition: all 0.2s ease-in-out;
+}
+
+.btn-success:hover {
+    background: linear-gradient(135deg, #059669 0%, #047857 100%);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+
+.btn-danger {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    border: none;
+    transition: all 0.2s ease-in-out;
+}
+
+.btn-danger:hover {
+    background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+}
+
+/* Modales mejorados */
+.modal-backdrop {
+    backdrop-filter: blur(4px);
+}
+
+.modal-content {
+    animation: slideInUp 0.3s ease-out;
+}
+
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Notificaciones */
+.notification {
+    animation: slideInRight 0.3s ease-out;
+}
+
+@keyframes slideInRight {
+    from {
+        opacity: 0;
+        transform: translateX(100%);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* Loading states */
+.loading-overlay {
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(2px);
+}
+
+.loading-spinner {
+    width: 32px;
+    height: 32px;
+    border: 3px solid #e2e8f0;
+    border-top: 3px solid #7c3aed;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    #seats-map {
+        max-height: 300px;
+        font-size: 8px;
+    }
+    
+    .seat-element {
+        width: 20px;
+        height: 20px;
+        font-size: 8px;
+        margin: 1px;
+    }
+    
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .filters-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 480px) {
+    .seat-element {
+        width: 16px;
+        height: 16px;
+        font-size: 7px;
+    }
+    
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Tooltip mejorado */
+.seat-tooltip {
+    position: absolute;
+    background: rgba(0, 0, 0, 0.9);
+    color: white;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    white-space: nowrap;
+    z-index: 1000;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.2s ease-in-out;
+}
+
+.seat-tooltip.show {
+    opacity: 1;
+}
+
+/* Escenario */
+.stage {
+    background: linear-gradient(135deg, #374151 0%, #1f2937 100%);
+    color: white;
+    font-weight: 700;
+    letter-spacing: 2px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* Leyenda */
+.legend-item {
+    transition: transform 0.2s ease-in-out;
+}
+
+.legend-item:hover {
+    transform: scale(1.05);
+}
+
+/* Información de asientos seleccionados */
+.selected-seats-info {
+    background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+    border: 2px solid #3b82f6;
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+} 
