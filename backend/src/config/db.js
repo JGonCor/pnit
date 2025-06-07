@@ -35,7 +35,7 @@ async function initDatabase() {
       CREATE TABLE IF NOT EXISTS reservas (
         id INT AUTO_INCREMENT PRIMARY KEY,
         cliente_id INT NOT NULL,
-        cantidad_entradas INT NOT NULL,
+        cantidad INT NOT NULL,
         tiene_discapacidad BOOLEAN DEFAULT FALSE,
         num_movilidad_reducida INT DEFAULT 0,
         tipo_pago ENUM('completo', 'venta_directa') NOT NULL,

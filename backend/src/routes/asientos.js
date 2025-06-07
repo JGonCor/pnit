@@ -225,7 +225,7 @@ router.post('/admin/marcar-vendidos', authController.verificarAuth, async (req, 
             const [reservaResult] = await connection.query(`
                 INSERT INTO reservas (
                     cliente_id, 
-                    cantidad_entradas, 
+                    cantidad, 
                     monto_total, 
                     monto_pagado, 
                     descuento_aplicado, 
