@@ -226,13 +226,13 @@ router.post('/admin/marcar-vendidos', authController.verificarAuth, async (req, 
                 INSERT INTO reservas (
                     cliente_id, 
                     cantidad_entradas, 
-                    precio_total, 
-                    precio_pagado, 
+                    monto_total, 
+                    monto_pagado, 
                     descuento_aplicado, 
                     tipo_pago, 
                     estado, 
                     asientos_seleccionados,
-                    tiene_movilidad_reducida,
+                    num_movilidad_reducida,
                     notas
                 ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             `, [
@@ -380,8 +380,8 @@ router.get('/admin/detallado', authController.verificarAuth, async (req, res) =>
                 r.id as reserva_info_id,
                 r.estado as reserva_estado,
                 r.tipo_pago,
-                r.precio_pagado,
-                r.precio_total,
+                r.monto_pagado,
+                r.monto_total,
                 r.created_at as fecha_reserva,
                 c.nombre as cliente_nombre,
                 c.email as cliente_email,

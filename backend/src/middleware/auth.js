@@ -12,7 +12,7 @@ function verificarToken(req, res, next) {
     
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        req.usuario = decoded;
+        req.user = decoded;
         next();
     } catch (error) {
         return res.status(401).json({ error: 'Token inválido' });
@@ -22,11 +22,11 @@ function verificarToken(req, res, next) {
 // Middleware para verificar rol de usuario
 function verificarRol(rolesPermitidos) {
     return (req, res, next) => {
-        if (!req.usuario) {
+        if (!req.user) {
             return res.status(401).json({ error: 'Usuario no autenticado' });
         }
         
-        if (!rolesPermitidos.includes(req.usuario.rol)) {
+        if (!rolesPermitidos.includes(req.user.rol)) {
             return res.status(403).json({ error: 'Acceso denegado' });
         }
         

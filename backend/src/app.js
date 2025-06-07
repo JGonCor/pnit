@@ -39,6 +39,7 @@ app.use(rateLimit(1000, 15 * 60 * 1000)); // 1000 requests per 15 minutes
 
 // Configuración de CORS para producción
 const allowedOrigins = [
+    'http://localhost:3000',
     'https://elpoderdesoltar.pnitecnicasolarte.com',
     'https://www.elpoderdesoltar.pnitecnicasolarte.com'
 ];

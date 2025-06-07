@@ -24,6 +24,8 @@ async function initDatabase() {
         nombre VARCHAR(255) NOT NULL,
         email VARCHAR(255) NOT NULL,
         telefono VARCHAR(20) NOT NULL,
+        documento VARCHAR(20) NOT NULL,
+        ciudad VARCHAR(100) NOT NULL DEFAULT 'Bogotá',
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       )
     `);
@@ -33,13 +35,13 @@ async function initDatabase() {
       CREATE TABLE IF NOT EXISTS reservas (
         id INT AUTO_INCREMENT PRIMARY KEY,
         cliente_id INT NOT NULL,
-        cantidad INT NOT NULL,
+        cantidad_entradas INT NOT NULL,
         tiene_discapacidad BOOLEAN DEFAULT FALSE,
         num_movilidad_reducida INT DEFAULT 0,
-        tipo_pago ENUM('completo', 'reserva') NOT NULL,
-        precio_unitario DECIMAL(10, 2) NOT NULL,
-        monto_total DECIMAL(10, 2) NOT NULL,
-        monto_pagado DECIMAL(10, 2) NOT NULL,
+        tipo_pago ENUM('completo', 'venta_directa') NOT NULL,
+        precio_unitario DECIMAL(10, 2) NOT NULL default 0,
+        monto_total DECIMAL(10, 2) NOT NULL default 0,
+        monto_pagado DECIMAL(10, 2) NOT NULL default 0,
         descuento_aplicado BOOLEAN DEFAULT FALSE,
         porcentaje_descuento DECIMAL(5, 2) DEFAULT 0,
         codigo_cupon VARCHAR(20) DEFAULT NULL,
@@ -51,6 +53,7 @@ async function initDatabase() {
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
         FOREIGN KEY (cliente_id) REFERENCES clientes(id),
+        notas TEXT DEFAULT NULL,
         INDEX idx_estado (estado),
         INDEX idx_tipo_pago (tipo_pago),
         INDEX idx_created_at (created_at)

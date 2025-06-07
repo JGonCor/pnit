@@ -1,7 +1,8 @@
 const jwt = require('jsonwebtoken');
 const usuarioModel = require('../models/usuarioModel');
 
-class AuthController {
+// Función de autenticación
+const authController = {
   /**
    * Autenticar un usuario y generar token JWT
    */
@@ -43,7 +44,7 @@ class AuthController {
       console.error('Error en login:', error);
       res.status(500).json({ error: 'Error interno del servidor' });
     }
-  }
+  },
   
   /**
    * Verificar si un token es válido y devolver la información del usuario
@@ -83,12 +84,12 @@ class AuthController {
       console.error('Error en verificarToken:', error);
       res.status(500).json({ error: 'Error interno del servidor' });
     }
-  }
+  },
   
   /**
    * Middleware para verificar autenticación
    */
-  verificarAuth(req, res, next) {
+  verificarAuth: (req, res, next) => {
     try {
       const token = req.headers.authorization?.split(' ')[1];
       
@@ -99,8 +100,9 @@ class AuthController {
       // Verificar el token
       try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET || 'secret_key_for_jwt_123456');
-        req.usuario = decoded;
-        next();
+        req.user = decoded; // Asignar el usuario decodificado a req.user
+        next(); // Continuar con el siguiente middleware o controlador
+        return;
       } catch (error) {
         return res.status(401).json({ error: 'Token inválido o expirado' });
       }
@@ -108,18 +110,18 @@ class AuthController {
       console.error('Error en verificarAuth:', error);
       res.status(500).json({ error: 'Error interno del servidor' });
     }
-  }
+  },
   
   /**
    * Middleware para verificar rol de administrador
    */
-  verificarAdmin(req, res, next) {
-    if (req.usuario && req.usuario.rol === 'admin') {
+  verificarAdmin: (req, res, next) => {
+    if (req.user && req.user.rol === 'admin') {
       next();
     } else {
       res.status(403).json({ error: 'Acceso denegado. Se requiere rol de administrador' });
     }
   }
-}
+};
 
-module.exports = new AuthController(); 
+module.exports = authController; 

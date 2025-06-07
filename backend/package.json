@@ -4,7 +4,7 @@
   "description": "Backend para la landing page de El Poder de Soltar",
   "main": "startup.js",
   "scripts": {
-    "start": "node startup.js",
+    "start": "nodemon startup.js",
     "dev": "node dev-start.js",
     "dev:watch": "nodemon dev-start.js",
     "setup-dev": "node setup-dev-db.js",
@@ -35,7 +35,7 @@
     "validator": "^13.9.0"
   },
   "devDependencies": {
-    "nodemon": "^3.0.1"
+    "nodemon": "^3.1.10"
   },
   "engines": {
     "node": ">=14.0.0",
